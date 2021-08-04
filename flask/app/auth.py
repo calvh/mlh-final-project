@@ -1,7 +1,6 @@
 from flask import (
     Blueprint,
     flash,
-    g,
     redirect,
     render_template,
     request,
@@ -30,9 +29,10 @@ def register():
             error = f"User {username} is already registered."
 
         if error is None:
-            db.session.add(
-                User(username=username, password=generate_password_hash(password))
+            new_user = User(
+                username=username, password=generate_password_hash(password)
             )
+            db.session.add(new_user)
             db.session.commit()
             flash("Register successful, please login.")
             return redirect(url_for("auth.login"))
