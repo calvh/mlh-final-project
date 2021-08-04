@@ -1,0 +1,72 @@
+version: "3.8"
+services:
+  db:
+    container_name: postgres
+    image: postgres
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d rps"]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    env_file:
+      - postgres.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - backend-network
+
+  web:
+    container_name: flask
+    build: flask
+    restart: always
+    env_file:
+      - postgres.env
+      - flask.env
+    volumes:
+      - ./flask:/flask
+    ports:
+      - 5000:5000
+    networks:
+      - backend-network
+      - frontend-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    container_name: nginx
+    image: jonasal/nginx-certbot
+    restart: unless-stopped
+    env_file:
+      - nginx.env
+    volumes:
+      - nginx-secrets:/etc/letsencrypt
+      - ./nginx/user_conf.d:/etc/nginx/user_conf.d
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - frontend-network
+    depends_on:
+      - web
+  cadvisor:
+    container_name: cadvisor
+    image: gcr.io/cadvisor/cadvisor:latest
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - frontend-network
+
+volumes:
+  postgres-data:
+  nginx-secrets:
+networks:
+  backend-network:
+  frontend-network:
