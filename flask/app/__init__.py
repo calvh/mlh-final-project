@@ -11,6 +11,7 @@ from app.models import db
 
 migrate = Migrate()
 
+
 def create_app():
 
     app = Flask(__name__)
@@ -27,15 +28,12 @@ def create_app():
         def inject_current_year():
             return {"current_year": datetime.datetime.now().year}
 
-
         @app.route("/health")
         def health():
             return Response(status=200)
-
 
         @app.errorhandler(404)
         def not_found(error_message):
             return render_template("404.html"), 404
 
         return app
-
