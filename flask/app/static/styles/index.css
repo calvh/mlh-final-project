@@ -1,0 +1,32 @@
+h1{
+    background-color: #bbb;
+    padding: 10px;
+    border-radius: 15px;
+    margin: 25px 15px;
+}
+
+.flex-container{
+    display: flex;
+    justify-content: space-evenly;
+    margin: 50px 75px;
+}
+
+.circle-dot {
+    height: 125px;
+    width: 125px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.circle-dot img{
+    margin-top: 23px;
+}
+
+.login-signup{
+    flex-direction: column;
+}
+
+.login-signup button{
+    margin: 5px 15px;
+}
