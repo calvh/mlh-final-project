@@ -2,11 +2,21 @@
 {% set active_page = "login" %}
 {% block title %} Login {% endblock %}
 {% block content %}
-<form method="POST">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="password">Password</label>
-    <input name="password" id="password" required>
-    <input type="submit" value="Login">
+<form method="POST" id="login-form">
+    <div id="username" style="margin: 30px 15px;">
+        <label for="username">Username</label>
+        <input type="text"  name="username" required>
+        <br>
+    </div>
+    <div id="password">
+        <label for="password">Password</label>
+        <input type="password"  name="password" required>
+        <br><br>
+    </div>
+    <input type="submit" value="Login" style="margin-bottom: 15px;"><br>
+    Don't have an Account? 
+    <a href="/auth/register/">
+        Register Here!
+    </a>
 </form>
 {% endblock %}
