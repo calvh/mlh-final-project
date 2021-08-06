@@ -78,7 +78,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
   };
 
   const resetGame = () => {
-    console.log(images["female"]);
     choicePlayer.innerHTML = images["female"];
     choiceOpponent.innerHTML = images["male"];
     statusDisplay.innerHTML = "Waiting for Player";
