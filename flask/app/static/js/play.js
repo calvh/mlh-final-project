@@ -10,6 +10,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
     }
   }
 
+  const imgMale = `<img src="./static/img/male.png" style="border-radius:50%; height: 300px; width: 300px;"></img>`;
+  const imgFemale = `<img src="./static/img/female.png" style="border-radius:50%; height: 300px; width: 300px;"></img>`;
+  const imgRock = `<img src="./static/img/icons8-rock-80.png"></img>`;
+  const imgPaper = `<img src="./static/img/icons8-paper-80.png"></img>`;
+  const imgScissors = `<img src="./static/img/icons8-hand-scissors-80.png"></img>`;
+
   const game = new Game("processing");
 
   const choicePlayer = document.querySelector("#choice-player");
@@ -21,6 +27,14 @@ window.addEventListener("DOMContentLoaded", (event) => {
   const statusDisplay = document.querySelector("#status");
 
   const choices = ["r", "p", "s"];
+
+  const images = {
+    r: imgRock,
+    p: imgPaper,
+    s: imgScissors,
+    male: imgMale,
+    female: imgFemale,
+  };
 
   const choose = (choices) => {
     return choices[Math.floor(Math.random() * choices.length)];
@@ -52,12 +66,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
   };
 
   const processChoice = (playerChoice) => {
-
     statusDisplay.innerHTML = "Processing...";
 
-    choicePlayer.innerHTML = playerChoice.toUpperCase();
+    choicePlayer.innerHTML = images[playerChoice];
     const compChoice = choose(choices);
-    choiceOpponent.innerHTML = compChoice.toUpperCase();
+    choiceOpponent.innerHTML = images[compChoice];
 
     const result = determineWinner(playerChoice, compChoice);
 
@@ -65,13 +78,14 @@ window.addEventListener("DOMContentLoaded", (event) => {
   };
 
   const resetGame = () => {
-    choicePlayer.innerHTML = "?";
-    choiceOpponent.innerHTML = "?";
+    console.log(images["female"]);
+    choicePlayer.innerHTML = images["female"];
+    choiceOpponent.innerHTML = images["male"];
     statusDisplay.innerHTML = "Waiting for Player";
     game.status = "ready";
   };
 
-  btnRock.document.addEventListener("click", (event) => {
+  btnRock.addEventListener("click", (event) => {
     event.preventDefault();
     if (game.status === "ready") {
       game.status = "processing";
@@ -80,7 +94,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     }
   });
 
-  btnPaper.document.addEventListener("click", (event) => {
+  btnPaper.addEventListener("click", (event) => {
     event.preventDefault();
     if (game.status === "ready") {
       game.status = "processing";
@@ -89,7 +103,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     }
   });
 
-  btnScissors.document.addEventListener("click", (event) => {
+  btnScissors.addEventListener("click", (event) => {
     event.preventDefault();
     if (game.status === "ready") {
       game.status = "processing";
@@ -98,10 +112,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
     }
   });
 
-  btnPlayAgain.document.addEventListener("click", (event) => {
+  btnPlayAgain.addEventListener("click", (event) => {
     event.preventDefault();
     if (game.status === "ended") {
       resetGame();
     }
   });
+
+  resetGame();
 });
