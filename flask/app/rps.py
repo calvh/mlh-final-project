@@ -7,6 +7,7 @@ rps = Blueprint("rps", __name__, template_folder="templates")
 def index():
     return render_template("index.html")
 
+
 @rps.route("/play")
 def play():
     return render_template("play.html")
