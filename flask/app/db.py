@@ -1,7 +1,6 @@
 import os
 from pymongo import MongoClient
 
-
 MONGODB_URI = (
     "mongodb://"
     "{user}:{password}@{hostname}:{port}/{db}?authSource={authSource}".format(
