@@ -38,7 +38,7 @@ def register():
                 "username": username,
                 "password": generate_password_hash(password),
             }
-            user_id = Users.insert_one(user).inserted_id
+            Users.insert_one(user).inserted_id
             flash("Register successful, please login.")
             return redirect(url_for("auth.login"))
 
