@@ -16,14 +16,11 @@ load_dotenv()
 #     )
 # )
 
-MONGODB_URI = (
-    "mongodb://"
-    "{hostname}:{port}/{db}".format(
-        hostname="localhost",
-        port=27017,
-        db="DB",
-        authSource="admin",
-    )
+MONGODB_URI = "mongodb://" "{hostname}:{port}/{db}".format(
+    hostname="localhost",
+    port=27017,
+    db="DB",
+    authSource="admin",
 )
 
 
