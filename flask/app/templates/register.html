@@ -2,11 +2,20 @@
 {% set active_page = "register" %}
 {% block title %} Register {% endblock %}
 {% block content %}
-<form method="POST">
-    <label for="username">Username</label>
-    <input name="username" id="username" required>
-    <label for="password">Password</label>
-    <input name="password" id="password" required>
-    <input type="submit" value="Register">
+<form id="register-form" method="POST">
+    <div id="username" style="margin: 30px 15px;">
+        <label class="username">Username</label>
+        <input type="text" id="username" name="username" style="border-radius: 5px;" required>
+    </div>
+    <div id="password">
+        <label class="passW">Password</label>
+        <input type="password" name="password" style="border-radius: 5px;" required>
+        <br><br>
+    </div>
+    <input type="submit" value="Register" style="margin-bottom: 15px;"><br>
+    Have an Account? 
+    <a href="/auth/login/">
+        Sign in Here!
+    </a>
 </form>
 {% endblock %}
