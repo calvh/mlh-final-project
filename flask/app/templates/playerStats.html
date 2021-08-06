@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% set active_page = "playerStats" %}
+{% block title %} Player Statistics {% endblock %}
+{% block content %}
+  <h1 style="background-color:transparent; margin-top: -175px; padding: 0px;">Player Stats</h1>
+  <section class="container">
+    <div class="one">
+        <img src="./static/img/Woman.png" alt="Avatar1" style="border-radius:50%; height: 300px; width: 300px;">
+        <h2>You</h2>
+        <div style="text-align: left; margin-left: 20%;">
+          <p>Wins: #</p>
+          <p>Losses: #</p>
+          <p>Ties: #</p>
+        </div>
+    </div>
+            
+    <div class="two">
+          <img src="./static/img/Man.png" alt="Avatar2" style="border-radius:50%; height: 300px; width: 300px;">
+          <h2>Opponent</h2>
+        <div style="text-align: left; margin-left: 20%;">
+          <p>Wins: #</p>
+          <p>Losses: #</p>
+          <p>Ties: #</p>
+        </div>
+    </div>
+  </section>
+{% endblock %}
