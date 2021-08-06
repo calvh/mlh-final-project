@@ -77,3 +77,22 @@ a:visited {
   a:active {
     color: black;
   }
+  
+.container {
+    width: 80%;
+    height: 200px;
+    margin: auto;
+    padding: 10px;
+  }
+  
+  .one {
+    margin-left: 15%;
+    height: 200px;
+    float: left;
+  }
+  
+  .two {
+    margin-right: 15%;
+    height: 200px;
+    float: right;
+  }
