@@ -1,5 +1,17 @@
 # mlh-final-project
 
+## Installation
+Make sure python3 and pip are installed. 
+Create a virtual environment
+``$ python3 -m venv virtualenv
+  $ source virtualenv/bin/activate``
+Switch to flask directory and install requirements
+``$ cd flask
+  $ pip install flask 
+  $ pip install pymongo``
+Finally:
+``$ flask run``
+
 ## Web Server
 
 -   [ ] A backend web server that will host the application. This must
