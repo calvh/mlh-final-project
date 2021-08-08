@@ -6,10 +6,6 @@ h1 {
   margin: 25px 15px;
 }
 
-.container {
-  background-color: #de7a22;
-}
-
 .mt-auto {
   padding: 10px;
   text-align: center;
@@ -98,6 +94,7 @@ a:active {
   height: 200px;
   margin: auto;
   padding: 10px;
+  background-color: #de7a22;
 }
 
 .one {
