@@ -8,7 +8,7 @@ MONGODB_URI = (
         password=os.environ.get("MONGO_PASSWORD"),
         hostname=os.environ.get("HOSTNAME"),
         port=27017,
-        db=os.environ.get("DB"),
+        db=os.environ.get("MONGO_DB"),
         authSource=os.environ.get("AUTH_SOURCE"),
     )
 )
