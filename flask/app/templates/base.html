@@ -20,6 +20,7 @@
 
 {% if session["username"] %}
 {% set navigation_bar = navigation_bar + [
+    ('/stats', 'stats', 'My Stats'),
     ('/auth/logout/', 'logout','Logout')
 ] %}
 {% else %}
