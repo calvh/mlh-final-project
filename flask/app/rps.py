@@ -15,4 +15,4 @@ def play():
 
 @rps.route("/stats")
 def stats():
-    return render_template("playerStats.html")
+    return render_template("stats.html")
