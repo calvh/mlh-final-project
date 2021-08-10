@@ -1,29 +1,30 @@
 version: "3.8"
 services:
-  db:
-    container_name: postgres
-    image: postgres
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d rps"]
-      interval: 3s
-      retries: 5
-      start_period: 30s
+  mongodb: 
+    container_name: mymongo
+    image: mongo
+    restart: unless-stopped
     env_file:
-      - postgres.env
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+      - mongo.env
+    volumes: 
+      - ./.docker/mongodb/data/db/:/data/db/ 
+      - ./.docker/mongodb/data/log/:/var/log/mongodb/
+
     networks:
-      - backend-network
+      - backend-network 
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME: MONGO_USER
+      - MONGO_INITDB_ROOT_PASSWORD: MONGO_PASSWORD
+      - MONGO_INITDB_DATABASE: DB
+    ports: 
+      - 27017:27017
 
   web:
     container_name: flask
     build: flask
     restart: always
     env_file:
-      - postgres.env
+      - mongo.env
       - flask.env
     volumes:
       - ./flask:/flask
@@ -65,8 +66,8 @@ services:
       - frontend-network
 
 volumes:
-  postgres-data:
-  nginx-secrets:
+  nginx-secrets:  
+  mongodb:
 networks:
   backend-network:
   frontend-network:
