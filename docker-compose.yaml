@@ -1,31 +1,28 @@
 version: '3.8'
 services:
   mongodb:
-    container_name: mymongo
+    container_name: mongo
     image: mongo
     restart: unless-stopped
     env_file:
       - mongo.env
     volumes:
-      - ./.docker/mongodb/data/db/:/data/db/
-      - ./.docker/mongodb/data/log/:/var/log/mongodb/
+      - mongo-data:/data/db/
+      - mongo-logs:/var/log/mongodb/
     networks:
       - backend-network
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=MONGO_USER
-      - MONGO_INITDB_ROOT_PASSWORD=MONGO_PASSWORD
-      - MONGO_INITDB_DATABASE=DB
     ports:
       - 27017:27017
 
   web:
-    container_name: rpsFlask
-    build: .
+    container_name: flask
+    build: ./flask
     restart: always
     env_file:
       - mongo.env
+      - flask.env
     volumes:
-      - ./flask:/flaskil
+      - ./flask:/flask
     ports:
       - 5000:5000
     networks:
@@ -35,14 +32,14 @@ services:
       - mongodb
 
   nginx:
-    container_name: rpsNginx
-    image: jonasal/nginx-certbot
+    container_name: nginx
+    image: jonasal/nginx-certbot:dev
     restart: unless-stopped
     env_file:
       - nginx.env
     volumes:
       - nginx-secrets:/etc/letsencrypt
-      - ./nginx/user_conf.d:/etc/nginx/user_conf.d
+      - ./nginx-dev/user_conf.d:/etc/nginx/user_conf.d
     ports:
       - 80:80
       - 443:443
@@ -52,7 +49,7 @@ services:
       - web
 
   cadvisor:
-    container_name: cAdvisor
+    container_name: cadvisor
     image: gcr.io/cadvisor/cadvisor:latest
     restart: unless-stopped
     volumes:
@@ -65,7 +62,8 @@ services:
 
 volumes:
   nginx-secrets:
-  mongodb:
+  mongo-data:
+  mongo-logs:
 
 networks:
   backend-network:
