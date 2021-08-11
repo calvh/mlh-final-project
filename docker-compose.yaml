@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 services:
   mongodb: 
     container_name: mymongo
@@ -9,7 +9,6 @@ services:
     volumes: 
       - ./.docker/mongodb/data/db/:/data/db/ 
       - ./.docker/mongodb/data/log/:/var/log/mongodb/
-
     networks:
       - backend-network 
     environment:
@@ -53,6 +52,7 @@ services:
       - frontend-network
     depends_on:
       - web
+
   cadvisor:
     container_name: cadvisor
     image: gcr.io/cadvisor/cadvisor:latest
@@ -68,6 +68,7 @@ services:
 volumes:
   nginx-secrets:  
   mongodb:
+
 networks:
   backend-network:
   frontend-network:
