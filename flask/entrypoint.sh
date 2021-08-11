@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # run flask-migrate scripts and start gunicorn
 
