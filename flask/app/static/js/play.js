@@ -3,7 +3,9 @@
 $(document).ready(() => {
   const socket = io();
 
-  const $statusDisplay = $("#status");
+  const $gameStatus = $("#game-status");
+  const $stats = $("#game-stats");
+  const $gameType = $("#game-type");
   const $choicePlayer = $("#choice-player");
   const $choiceOpponent = $("#choice-opponent");
   const $socketId = $("#socket-id");
@@ -99,39 +101,38 @@ $(document).ready(() => {
 
     processChoices() {
       switch (this.status) {
-        case "WAITING_BOTH":
-          if (this.playerChoice) {
-            this.status = "WAITING_2";
-          } else if (this.opponentChoice) {
-            this.status = "WAITING_1";
-          }
-        case "WAITING_1":
-        case "WAITING_2":
+        case "WAITING_PLAYER":
+        case "WAITING_OPPONENT":
           if (this.playerChoice && this.opponentChoice) {
             const c1 = this.playerChoice;
             const c2 = this.opponentChoice;
             updateOpponentChoice();
             const result = Game.calculateResult(c1, c2);
 
-            if (result === "w") {
-              this.wins += 1;
-            }
-
-            if (result === "l") {
-              this.losses += 1;
-            }
-
-            if (result === "d") {
-              this.draws += 1;
+            switch (result) {
+              case "w":
+                this.wins += 1;
+                break;
+              case "l":
+                this.losses += 1;
+                break;
+              case "d":
+                this.draws += 1;
+                break;
+              default:
+                // error
+                console.log(result);
+                break;
             }
 
             this.status = "ENDED";
             updateDisplay();
           }
+          break;
 
         default:
           // do nothing
-          return;
+          break;
       }
     }
   }
@@ -151,22 +152,33 @@ $(document).ready(() => {
   };
 
   const updateDisplay = () => {
-    $statusDisplay.text(game.status);
+    $gameStatus.text(game.status);
     $socketStatus.text(game.socketStatus);
+    $gameType.text(`Game type: ${game.gameType}`);
     $currentRoom.text(game.room);
     $opponent.text(game.opponent);
+    $stats.text(
+      `Wins: ${game.wins}, Losses: ${game.losses}, Draws: ${game.draws}`
+    );
   };
 
   socket.on("choice", (data) => {
     game.opponentChoice = data.choice;
     if (game.status === "WAITING_BOTH") {
-      game.status = "WAITING_1";
+      game.status = "WAITING_PLAYER";
+      updateDisplay();
     }
     game.processChoices();
+    if (game.status === "ENDED") {
+      $btnPlayAgain.prop("disabled", false);
+    }
   });
 
   $btnPlayAgain.on("click", (event) => {
     event.preventDefault();
+    $btnPlayCpu.prop("disabled", false);
+    $btnQueue.prop("disabled", false);
+    $btnPlayAgain.prop("disabled", true);
     game.reset(socket);
     updateDisplay();
     $choicePlayer.html(images["q"]);
@@ -182,19 +194,22 @@ $(document).ready(() => {
   $btnPlayCpu.on("click", (event) => {
     event.preventDefault();
     if (game.status === "CHOOSE_GAME_TYPE") {
+      $btnPlayCpu.prop("disabled", true);
+      $btnQueue.prop("disabled", true);
       $choicePlayer.html(images["q"]);
       $choiceOpponent.html(images["q"]);
       game.gameType = "CPU";
       game.opponentChoice = Game.cpuChoose();
-      game.status = "WAITING_1";
+      game.status = "WAITING_PLAYER";
       updateDisplay();
     }
   });
 
   $btnQueue.on("click", (event) => {
+    event.preventDefault();
     if (game.status === "CHOOSE_GAME_TYPE") {
-      $choicePlayer.html(images["q"]);
-      event.preventDefault();
+      $btnPlayCpu.prop("disabled", true);
+      $btnQueue.prop("disabled", true);
       $choicePlayer.html(images["q"]);
       $choiceOpponent.html(images["q"]);
       socket.emit("queue");
@@ -212,19 +227,29 @@ $(document).ready(() => {
       game.playerChoice = choice;
       updatePlayerChoice();
       game.processChoices();
+      if (game.status === "ENDED") {
+        $btnPlayAgain.prop("disabled", false);
+      }
     }
 
     // vs human
-    if (game.room) {
-      game.playerChoice = choice;
-      socket.emit("choice", { choice });
-      updatePlayerChoice();
+    if (game.status === "WAITING_BOTH" || game.status === "WAITING_PLAYER") {
+      if (game.room) {
+        game.playerChoice = choice;
+        socket.emit("choice", { choice });
+        updatePlayerChoice();
 
-      if (game.status === "WAITING_BOTH") {
-        game.status = "WAITING_2";
+        if (game.status === "WAITING_BOTH") {
+          game.status = "WAITING_OPPONENT";
+          updateDisplay();
+        }
+        game.processChoices();
+        if (game.status === "ENDED") {
+          $btnPlayAgain.prop("disabled", false);
+        }
+      } else {
+        console.log("ERROR_NOT_IN_ROOM");
       }
-
-      game.processChoices();
     }
   };
   $btnRock.on("click", (event) => {
