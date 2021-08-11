@@ -123,3 +123,14 @@ def on_leave(data):
 
     # notify room that a user has left
     emit("room notification", f"{sid} LEFT", to=room)
+
+
+@socketio.on("choice")
+def handle_choice(data):
+    print(request.sid)
+    print(data)
+    try:
+        room = rooms()[1]
+        emit("choice", data, to=room, include_self=False)
+    except IndexError:
+        emit("ERROR", "Server could not determine if you are in a room")
