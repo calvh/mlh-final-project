@@ -47,7 +47,11 @@ def handle_queue():
 
     while len(players) < 2:
         try:
-            players.add(queue.popleft())
+            popped = queue.popleft()
+
+            # handle disconnected clients
+            if popped in clients:
+                players.add(popped)
         except IndexError:
             break
 
@@ -109,15 +113,20 @@ def handle_room_chat(data):
 def on_leave(data):
 
     sid = request.sid
-    room = data["room"]
-    leave_room(room)
 
-    # notify user of successful exit
-    emit("user notification", f"Left {room}")
-    emit("status change", {"status": "CONNECTED"})
+    if room:
+        room = data["room"]
+        leave_room(room)
 
-    # notify room that a user has left
-    emit("room notification", f"{sid} LEFT", to=room)
+        # notify user of successful exit
+        emit("user notification", f"Left {room}")
+        emit("status change", {"status": "CONNECTED"})
+
+        # notify room that a user has left
+        emit("room notification", f"{sid} LEFT", to=room)
+    else:
+        # no room, leave triggered by cancel queue
+        clients.remove(sid)
 
 
 @socketio.on("choice")

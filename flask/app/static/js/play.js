@@ -3,6 +3,10 @@
 $(document).ready(() => {
   const socket = io();
 
+  const ping = setInterval(() => {
+    socket.emit("message", "ping");
+  }, 3000);
+
   const $gameStatus = $("#game-status");
   const $stats = $("#game-stats");
   const $gameType = $("#game-type");
@@ -210,6 +214,9 @@ $(document).ready(() => {
     if (game.status === "CHOOSE_GAME_TYPE") {
       $btnPlayCpu.prop("disabled", true);
       $btnQueue.prop("disabled", true);
+
+      // allow player to cancel queue
+      $btnPlayAgain.prop("disabled", false);
       $choicePlayer.html(images["q"]);
       $choiceOpponent.html(images["q"]);
       socket.emit("queue");
@@ -268,19 +275,27 @@ $(document).ready(() => {
   });
 
   socket.on("connect", () => {
+    console.log("connected");
+    console.log(socket.id);
     game.socketStatus = "CONNECTED";
     updateDisplay();
   });
 
   socket.on("disconnect", (reason) => {
+    console.log("disconnected");
+    $btnPlayAgain.prop("disabled", false);
+    $btnPlayCpu.prop("disabled", true);
+    $btnQueue.prop("disabled", true);
     game.socketStatus = "DISCONNECTED";
+    game.reset(socket);
+    $choicePlayer.html(images["q"]);
+    $choiceOpponent.html(images["q"]);
+    updateDisplay();
+
+    // TODO implement proper correction measures on frontend and backend
     if (reason === "io server disconnect") {
       // the disconnection was initiated by the server, you need to reconnect manually
       socket.connect();
-      game.reset(socket);
-      updateDisplay();
-      $choicePlayer.html(images["q"]);
-      $choiceOpponent.html(images["q"]);
     }
     // else the socket will automatically try to reconnect
   });
