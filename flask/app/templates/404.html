@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>404</title>
-  </head>
-
+{% extends 'base.html' %}
+{% set active_page = "404" %}
+{% block title %} 404 Error {% endblock %}
+{% block content %}
   <body>
-    <div>404</div>
+    <div style="width: 80%; margin: 50%; height: 200px; margin: auto; padding: 40px; background-color: #de7a22;"">
+      <h1 style="padding: 10px;"><b>404 error.</b> This page was not found.</h1>
+      <button type="button" style= "padding: 20px; margin: 200px; font-size: larger; background-color: #6ab187;"><a href="/">Go Back to Home Page</a></button>
+    </div>
   </body>
-</html>
+  {% endblock %}
