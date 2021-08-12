@@ -2,18 +2,16 @@
   padding: 20px;
   margin: 200px;
   font-size: larger;
-  background-color: #6ab187;
+  background-color: #f4cc70;
 }
 
 .hdr {
   padding: 10px;
+  margin-top: 100px;
+  color: #794518;
+  background-color: #f4cc70;
 }
 
-.contain {
-  width: 80%;
-  margin: 50%;
-  height: 200px;
-  margin: auto;
-  padding: 40px;
+body {
   background-color: #de7a22;
 }
