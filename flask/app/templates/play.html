@@ -2,16 +2,22 @@
 {% set active_page = "play" %}
 {% block title %} Game {% endblock %}
 {% block content %}
-<script src="./static/js/play.js"></script> 
 
 <div class="container">
     <h1>Rock! Paper! Scissors! Showdown </h1>
+    <h1 id="game-stats">Wins: 0, Losses: 0, Draws: 0</h1>
+    <h1 id="game-status">Choose Game Type</h1>
+    <h2 id="game-type">Game type: ?</h1>
+    <div class="my-2">
+        <button id="btn-play-cpu">Play against CPU</button>
+        <button id="btn-queue">Play against Human</button>
+    </div>
     <div class="flex-container">
         <p id="choice-player" ><img src="./static/img/female.png" alt="Avatar1" style="border-radius:50%; height: 300px; width: 300px;"></p>
-        <p style="margin-top: 150px; font-size:40px" id="status">VS</p>
+        <p style="margin-top: 150px; font-size:40px">VS</p>
         <p id="choice-opponent"><img src="./static/img/male.png" alt="Avatar2" style="border-radius:50%; height: 300px; width: 300px;"></p>
     </div>
-    <div class="flex-container">    
+    <div class="flex-container">
         <span class="circle-dot" id="btn-rock">
             <img src="./static/img/icons8-rock-80.png"></img>
         </span>
@@ -22,6 +28,39 @@
             <img src="./static/img/icons8-hand-scissors-80.png"></img>
         </span>
     </div>
-    <button type="button" class="play-anon-btn" id="btn-play-again" style="border-radius: 15px;">Play Again?</button>
+    <button type="button" class="play-anon-btn" id="btn-play-again"
+        style="border-radius: 15px;" disabled>Play Again?</button>
 </div>
+
+<section class="p-5 d-flex justify-content-center">
+    <div style="margin-top: 700px">
+        <h3>Socket Status:</h3>
+        <div id="socket-status"></div>
+
+
+        <h3>General Chatroom:</h3>
+        <div>
+            <ul id="general-chat-messages"></ul>
+            <input type="text" id="input-general-chat" />
+            <button id="btn-send-general-chat">Send</button>
+        </div>
+
+        <h3>Current Room:</h3>
+        <div id="current-room"></div>
+
+        <h3>Opponent:</h3>
+        <div id="opponent"></div>
+
+        <h3>Room Chatroom:</h3>
+        <div>
+            <ul id="room-chat-messages"></ul>
+            <input type="text" id="input-room-chat" />
+            <button id="btn-send-room-chat">Send</button>
+            <button id="btn-leave-room">LEAVE ROOM</button>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+<script src="./static/js/play.js"></script>
 {% endblock %}
