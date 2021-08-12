@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% set active_page = "index" %}
+{% block head_css %} <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}" /> {% endblock %}
 {% block title %} Index {% endblock %}
 {% block content %}
 <div class="container">
