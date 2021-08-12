@@ -3,10 +3,6 @@
 $(document).ready(() => {
   const socket = io();
 
-  const ping = setInterval(() => {
-    socket.emit("message", "ping");
-  }, 3000);
-
   const $gameStatus = $("#game-status");
   const $stats = $("#game-stats");
   const $gameType = $("#game-type");
@@ -166,18 +162,6 @@ $(document).ready(() => {
     );
   };
 
-  socket.on("choice", (data) => {
-    game.opponentChoice = data.choice;
-    if (game.status === "WAITING_BOTH") {
-      game.status = "WAITING_PLAYER";
-      updateDisplay();
-    }
-    game.processChoices();
-    if (game.status === "ENDED") {
-      $btnPlayAgain.prop("disabled", false);
-    }
-  });
-
   $btnPlayAgain.on("click", (event) => {
     event.preventDefault();
     $btnPlayCpu.prop("disabled", false);
@@ -214,9 +198,6 @@ $(document).ready(() => {
     if (game.status === "CHOOSE_GAME_TYPE") {
       $btnPlayCpu.prop("disabled", true);
       $btnQueue.prop("disabled", true);
-
-      // allow player to cancel queue
-      $btnPlayAgain.prop("disabled", false);
       $choicePlayer.html(images["q"]);
       $choiceOpponent.html(images["q"]);
       socket.emit("queue");
@@ -272,6 +253,31 @@ $(document).ready(() => {
   $btnScissors.on("click", (event) => {
     event.preventDefault();
     handlePlayerButton("s");
+  });
+
+  $btnSendGeneralChat.on("click", (event) => {
+    event.preventDefault();
+
+    const message = $inputGeneralChat.val().trim();
+
+    if (message) {
+      socket.emit("general chat", {
+        message,
+      });
+    }
+  });
+
+  $btnSendRoomChat.on("click", (event) => {
+    event.preventDefault();
+
+    const message = $inputRoomChat.val().trim();
+
+    if (game.room && message) {
+      socket.emit("room chat", {
+        message,
+        room: game.room,
+      });
+    }
   });
 
   socket.on("connect", () => {
@@ -332,28 +338,15 @@ $(document).ready(() => {
     console.log(data);
   });
 
-  $btnSendGeneralChat.on("click", (event) => {
-    event.preventDefault();
-
-    const message = $inputGeneralChat.val().trim();
-
-    if (message) {
-      socket.emit("general chat", {
-        message,
-      });
+  socket.on("choice", (data) => {
+    game.opponentChoice = data.choice;
+    if (game.status === "WAITING_BOTH") {
+      game.status = "WAITING_PLAYER";
+      updateDisplay();
     }
-  });
-
-  $btnSendRoomChat.on("click", (event) => {
-    event.preventDefault();
-
-    const message = $inputRoomChat.val().trim();
-
-    if (game.room && message) {
-      socket.emit("room chat", {
-        message,
-        room: game.room,
-      });
+    game.processChoices();
+    if (game.status === "ENDED") {
+      $btnPlayAgain.prop("disabled", false);
     }
   });
 });
