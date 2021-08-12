@@ -5,9 +5,16 @@
 
 <div class="container">
     <h1>Rock! Paper! Scissors! Showdown </h1>
+    <h1 id="game-stats">Wins: 0, Losses: 0, Draws: 0</h1>
+    <h1 id="game-status">Choose Game Type</h1>
+    <h2 id="game-type">Game type: ?</h1>
+    <div class="my-2">
+        <button id="btn-play-cpu">Play against CPU</button>
+        <button id="btn-queue">Play against Human</button>
+    </div>
     <div class="flex-container">
         <p id="choice-player" ><img src="./static/img/female.png" alt="Avatar1" style="border-radius:50%; height: 300px; width: 300px;"></p>
-        <p style="margin-top: 150px; font-size:40px" id="status">VS</p>
+        <p style="margin-top: 150px; font-size:40px">VS</p>
         <p id="choice-opponent"><img src="./static/img/male.png" alt="Avatar2" style="border-radius:50%; height: 300px; width: 300px;"></p>
     </div>
     <div class="flex-container">
@@ -21,17 +28,15 @@
             <img src="./static/img/icons8-hand-scissors-80.png"></img>
         </span>
     </div>
-    <button type="button" class="play-anon-btn" id="btn-play-again" style="border-radius: 15px;">Play Again?</button>
+    <button type="button" class="play-anon-btn" id="btn-play-again"
+        style="border-radius: 15px;" disabled>Play Again?</button>
 </div>
 
 <section class="p-5 d-flex justify-content-center">
     <div style="margin-top: 700px">
-        <h3>Status:</h3>
+        <h3>Socket Status:</h3>
         <div id="socket-status"></div>
 
-        <div class="my-2">
-            <button id="btn-queue">Queue</button>
-        </div>
 
         <h3>General Chatroom:</h3>
         <div>
@@ -41,10 +46,10 @@
         </div>
 
         <h3>Current Room:</h3>
-        <div id="current-room">null</div>
+        <div id="current-room"></div>
 
         <h3>Opponent:</h3>
-        <div id="opponent">null</div>
+        <div id="opponent"></div>
 
         <h3>Room Chatroom:</h3>
         <div>
@@ -58,7 +63,4 @@
 
 <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
 <script src="./static/js/play.js"></script>
-<script src="./static/js/socketio.js"></script>
-
-
 {% endblock %}

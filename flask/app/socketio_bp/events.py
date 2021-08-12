@@ -55,11 +55,6 @@ def handle_queue():
     if len(players) < 2:
         last = players.pop()
         queue.append(last)
-        emit(
-            "status change",
-            {"status": "Waiting for players to join..."},
-            to=last,
-        )
         return emit(
             "user notification", "Waiting for players to join...", to=last
         )
@@ -78,15 +73,15 @@ def handle_queue():
     join_room(room_id, sid=player1)
     join_room(room_id, sid=player2)
 
-    emit("status change", {"status": f"In game with {player2}"}, to=player1)
-    emit("status change", {"status": f"In game with {player1}"}, to=player2)
-
     emit("room notification", f"{player1} JOINED", to=room_id)
     emit("room notification", f"{player2} JOINED", to=room_id)
 
     emit("user notification", f"Joined room {room_id}", to=player1)
-    emit("user notification", f"Joined room {room_id}", to=player2)
+    emit("user notification", f"Opponent: {player2}", to=player1)
     emit("joined room", {"room": room_id, "opponent": player2}, to=player1)
+
+    emit("user notification", f"Joined room {room_id}", to=player2)
+    emit("user notification", f"Opponent: {player1}", to=player2)
     emit("joined room", {"room": room_id, "opponent": player1}, to=player2)
 
 
@@ -123,3 +118,12 @@ def on_leave(data):
 
     # notify room that a user has left
     emit("room notification", f"{sid} LEFT", to=room)
+
+
+@socketio.on("choice")
+def handle_choice(data):
+    try:
+        room = rooms()[1]
+        emit("choice", data, to=room, include_self=False)
+    except IndexError:
+        emit("ERROR", "Server could not determine if you are in a room")
