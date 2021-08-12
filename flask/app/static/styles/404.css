@@ -1,0 +1,19 @@
+.homeButton {
+  padding: 20px;
+  margin: 200px;
+  font-size: larger;
+  background-color: #6ab187;
+}
+
+.hdr {
+  padding: 10px;
+}
+
+.contain {
+  width: 80%;
+  margin: 50%;
+  height: 200px;
+  margin: auto;
+  padding: 40px;
+  background-color: #de7a22;
+}
