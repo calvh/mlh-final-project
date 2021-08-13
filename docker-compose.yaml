@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   mongodb:
     container_name: mongo
@@ -33,13 +33,13 @@ services:
 
   nginx:
     container_name: nginx
-    image: jonasal/nginx-certbot:dev
+    image: jonasal/nginx-certbot
     restart: unless-stopped
     env_file:
       - nginx.env
     volumes:
-      - nginx-secrets:/etc/letsencrypt
-      - ./nginx-dev/user_conf.d:/etc/nginx/user_conf.d
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./nginx/user_conf.d:/etc/nginx/user_conf.d
     ports:
       - 80:80
       - 443:443

@@ -34,6 +34,23 @@ def handle_disconnect():
         emit("room notification", f"{sid} DISCONNECTED", to=room)
 
 
+@socketio.on("leave")
+def on_leave(data):
+
+    sid = request.sid
+    room = data["room"]
+
+    leave_room(room)
+
+    # notify user of successful exit
+    emit("user notification", f"Left {room}")
+    emit("status change", {"status": "CONNECTED"})
+
+    # notify room that a user has left
+    emit("room notification", f"{sid} LEFT", to=room)
+
+
+# queue/join room
 @socketio.on("queue")
 def handle_queue():
     sid = request.sid
@@ -47,7 +64,12 @@ def handle_queue():
 
     while len(players) < 2:
         try:
-            players.add(queue.popleft())
+            popped = queue.popleft()
+
+            # handle disconnected clients
+            if popped in clients:
+                players.add(popped)
+
         except IndexError:
             break
 
@@ -85,6 +107,29 @@ def handle_queue():
     emit("joined room", {"room": room_id, "opponent": player1}, to=player2)
 
 
+# TODO: implement frontend
+# cancel queue
+@socketio.on("cancel queue")
+def handle_cancel_queue(data):
+
+    sid = request.sid
+
+    try:
+        queue.remove(sid)
+        emit("cancel queue")
+    except ValueError:
+        emit("user notification", "Not in queue")
+
+
+@socketio.on("choice")
+def handle_choice(data):
+    try:
+        room = rooms()[1]
+        emit("choice", data, to=room, include_self=False)
+    except IndexError:
+        emit("ERROR", "Server could not determine if you are in a room")
+
+
 @socketio.on("general chat")
 def handle_general_chat(data):
     sid = request.sid
@@ -102,28 +147,3 @@ def handle_room_chat(data):
         username = session.get("username", sid)
         data["username"] = username
         emit("room chat", data, to=data["room"])
-
-
-# leave room
-@socketio.on("leave")
-def on_leave(data):
-
-    sid = request.sid
-    room = data["room"]
-    leave_room(room)
-
-    # notify user of successful exit
-    emit("user notification", f"Left {room}")
-    emit("status change", {"status": "CONNECTED"})
-
-    # notify room that a user has left
-    emit("room notification", f"{sid} LEFT", to=room)
-
-
-@socketio.on("choice")
-def handle_choice(data):
-    try:
-        room = rooms()[1]
-        emit("choice", data, to=room, include_self=False)
-    except IndexError:
-        emit("ERROR", "Server could not determine if you are in a room")
