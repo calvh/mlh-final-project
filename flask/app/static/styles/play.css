@@ -1,0 +1,28 @@
+.container {
+  background-color: #de7a22;
+}
+
+#choice-player {
+  border-radius: 50%;
+  height: 300px;
+  width: 300px;
+}
+
+#versus {
+  margin-top: 150px;
+  font-size: 40px;
+}
+
+#choice-opponent {
+  border-radius: 50%;
+  height: 300px;
+  width: 300px;
+}
+
+.play-anon-btn {
+  border-radius: 15px;
+}
+
+.p-5 d-flex justify-content-center {
+  margin-top: 700px;
+}
