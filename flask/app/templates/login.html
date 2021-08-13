@@ -2,21 +2,25 @@
 {% set active_page = "login" %}
 {% block title %} Login {% endblock %}
 {% block content %}
-<form method="POST" id="login-form">
-    <div id="username" style="margin: 30px 15px;">
-        <label for="username">Username</label>
-        <input type="text"  name="username" style="border-radius: 5px;" required>
-        <br>
-    </div>
-    <div id="password">
-        <label for="password">Password</label>
-        <input type="password"  name="password" style="border-radius: 5px;" required>
-        <br><br>
-    </div>
-    <input type="submit" value="Login" style="margin-bottom: 15px;"><br>
-    Don't have an Account? 
-    <a href="/auth/register/">
-        Register Here!
-    </a>
-</form>
+
+<body style="background-color:#f4cc70;"> 
+    <h2 style="color: #794518;">Log In Here!</h2>
+    <form method="POST" id="login-form">
+        <div id="username" style= "margin: 30px 15px;">
+            <label for="username">Username</label>
+            <input type="text"  name="username" style="border-radius: 5px;" required>
+            <br>
+        </div>
+        <div id="password">
+            <label for="password">Password</label>
+            <input type="password"  name="password" style="border-radius: 5px;" required>
+            <br><br>
+        </div>
+        <input type="submit" value="Login" style="margin-bottom: 15px;"><br>
+        Don't have an Account? 
+        <a href="/auth/register/">
+            Register Here!
+        </a>
+    </form>
+</body>
 {% endblock %}

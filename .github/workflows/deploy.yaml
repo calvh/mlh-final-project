@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      - deploy
   workflow_dispatch:
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy-key.pem
           chmod 600 ~/.ssh/deploy-key.pem
           cat >> ~/.ssh/config << END
-          Host aws-mlh
+          Host mlh-rps
             HostName $SSH_IP
             User $SSH_USER
             IdentityFile ~/.ssh/deploy-key.pem
@@ -30,29 +30,10 @@ jobs:
 
       - name: Deploy site
         run: >-
-          ssh aws-mlh
+          ssh mlh-rps
           'cd ${{ secrets.PROJECT_ROOT }} &&
           git fetch &&
           git reset --hard origin/main &&
           docker-compose down &&
           docker-compose up -d --build &&
           docker-compose ps'
-
-      - name: Checkout repo
-        uses: actions/checkout@v2
-
-      - name: Run production test
-        run: ./prod_test.sh
-
-      - name: Notify discord failure
-        if: ${{ failure() }}
-        run: >-
-          curl -s
-          -X POST "${{ secrets.DISCORD_WEBHOOK }}"
-          -d "content=🚨 Deployment Failed"
-
-      - name: Notify discord success
-        run: >-
-          curl -s
-          -X POST "${{ secrets.DISCORD_WEBHOOK }}"
-          -d "content=🚀 Deployment Successful"

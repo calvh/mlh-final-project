@@ -5,11 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="./static/styles/index.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     {% block head_css %}{% endblock %}
     <title>{% block title %}{% endblock %} - RPS</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
 {% set navigation_bar = [
@@ -18,6 +20,7 @@
 
 {% if session["username"] %}
 {% set navigation_bar = navigation_bar + [
+    ('/stats', 'stats', 'My Stats'),
     ('/auth/logout/', 'logout','Logout')
 ] %}
 {% else %}
@@ -35,8 +38,7 @@
                 <h3 class="float-md-start mb-0">RPS</h3>
                 <nav class="nav nav-masthead justify-content-center float-md-end">
                     {% for href, id, caption in navigation_bar %}
-                    <a {% if id==active_page %} class="nav-link active" {% else %} class="nav-link" {% endif %}
-                        href="{{ href|e }}">{{ caption|e }}</a>
+                    <a {% if id==active_page %} class="nav-link active" {% else %} class="nav-link" {% endif %} href="{{ href|e }}">{{ caption|e }}</a>
                     {% endfor %}
                 </nav>
             </div>
@@ -49,15 +51,25 @@
             {% block content %}{% endblock %}
         </section>
         <footer class="mt-auto">
+            <a href="https://icons8.com/icon/26333/rock">Rock Icon</a>, 
+            <a href="https://icons8.com/icon/6552/paper">Paper Icon</a>, 
+            <a href="https://icons8.com/icon/44376/hand-scissors">Hand Scissors Icon</a>, & 
+            <a target="_blank" href="https://icons8.com/icon/42472/question-mark">Question Mark Icon</a> 
+            by <a target="_blank" href="https://icons8.com">  Icons8</a>
+
             <p>Copyright &copy; {% if current_year == 2021 %}2021{% else
             %}2021-{{current_year}}{% endif %} The A Team</p>
+
+
+            <!-- <a href="https://icons8.com/icon/26333/rock">Rock icon by Icons8</a>
+            <a target="_blank" href="https://icons8.com/icon/42472/question-mark">Question Mark</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+            <a href="https://icons8.com/icon/6552/paper">Paper icon by Icons8</a>
+            <a href="https://icons8.com/icon/44376/hand-scissors">Hand Scissors icon by Icons8</a> -->
         </footer>
 
     </div>
     <!-- Bootstrap 5 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 </body>
 
 </html>
