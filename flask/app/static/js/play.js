@@ -162,18 +162,6 @@ $(document).ready(() => {
     );
   };
 
-  socket.on("choice", (data) => {
-    game.opponentChoice = data.choice;
-    if (game.status === "WAITING_BOTH") {
-      game.status = "WAITING_PLAYER";
-      updateDisplay();
-    }
-    game.processChoices();
-    if (game.status === "ENDED") {
-      $btnPlayAgain.prop("disabled", false);
-    }
-  });
-
   $btnPlayAgain.on("click", (event) => {
     event.preventDefault();
     $btnPlayCpu.prop("disabled", false);
@@ -267,20 +255,53 @@ $(document).ready(() => {
     handlePlayerButton("s");
   });
 
+  $btnSendGeneralChat.on("click", (event) => {
+    event.preventDefault();
+
+    const message = $inputGeneralChat.val().trim();
+
+    if (message) {
+      socket.emit("general chat", {
+        message,
+      });
+    }
+  });
+
+  $btnSendRoomChat.on("click", (event) => {
+    event.preventDefault();
+
+    const message = $inputRoomChat.val().trim();
+
+    if (game.room && message) {
+      socket.emit("room chat", {
+        message,
+        room: game.room,
+      });
+    }
+  });
+
   socket.on("connect", () => {
+    console.log("connected");
+    console.log(socket.id);
     game.socketStatus = "CONNECTED";
     updateDisplay();
   });
 
   socket.on("disconnect", (reason) => {
+    console.log("disconnected");
+    $btnPlayAgain.prop("disabled", false);
+    $btnPlayCpu.prop("disabled", true);
+    $btnQueue.prop("disabled", true);
     game.socketStatus = "DISCONNECTED";
+    game.reset(socket);
+    $choicePlayer.html(images["q"]);
+    $choiceOpponent.html(images["q"]);
+    updateDisplay();
+
+    // TODO implement proper correction measures on frontend and backend
     if (reason === "io server disconnect") {
       // the disconnection was initiated by the server, you need to reconnect manually
       socket.connect();
-      game.reset(socket);
-      updateDisplay();
-      $choicePlayer.html(images["q"]);
-      $choiceOpponent.html(images["q"]);
     }
     // else the socket will automatically try to reconnect
   });
@@ -317,28 +338,15 @@ $(document).ready(() => {
     console.log(data);
   });
 
-  $btnSendGeneralChat.on("click", (event) => {
-    event.preventDefault();
-
-    const message = $inputGeneralChat.val().trim();
-
-    if (message) {
-      socket.emit("general chat", {
-        message,
-      });
+  socket.on("choice", (data) => {
+    game.opponentChoice = data.choice;
+    if (game.status === "WAITING_BOTH") {
+      game.status = "WAITING_PLAYER";
+      updateDisplay();
     }
-  });
-
-  $btnSendRoomChat.on("click", (event) => {
-    event.preventDefault();
-
-    const message = $inputRoomChat.val().trim();
-
-    if (game.room && message) {
-      socket.emit("room chat", {
-        message,
-        room: game.room,
-      });
+    game.processChoices();
+    if (game.status === "ENDED") {
+      $btnPlayAgain.prop("disabled", false);
     }
   });
 });
