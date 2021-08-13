@@ -9,5 +9,6 @@ socketio = SocketIO(
         "https://localhost",
         "http://localhost",
         "http://localhost:5000",
+        "https://rockpaperscissors.duckdns.org"
     ],
 )
