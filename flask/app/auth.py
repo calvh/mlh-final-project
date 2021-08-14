@@ -18,7 +18,7 @@ db = client["rps"]
 Users = db.users
 
 
-@auth.route("/register/", methods=["GET", "POST"])
+@auth.route("/register/", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
         username = request.form.get("username")
@@ -47,7 +47,7 @@ def register():
     return render_template("register.html")
 
 
-@auth.route("/login/", methods=["GET", "POST"])
+@auth.route("/login/", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
         username = request.form.get("username")
