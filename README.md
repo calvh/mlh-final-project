@@ -1,5 +1,15 @@
 # RPS
 
+![License](https://img.shields.io/github/license/calvh/mlh-final-project)
+![Open
+Issues](https://img.shields.io/github/issues-raw/calvh/mlh-final-project)
+![Closed
+Issues](https://img.shields.io/github/issues-closed-raw/calvh/mlh-final-project)
+![Open
+PRs](https://img.shields.io/github/issues-pr-raw/calvh/mlh-final-project)
+![Closed
+PRs](https://img.shields.io/github/issues-pr-closed-raw/calvh/mlh-final-project)
+
 ## About
 
 RPS is rock, paper, scissors built with Flask, and MongoDB on the
