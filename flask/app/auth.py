@@ -18,7 +18,7 @@ db = client["rps"]
 Users = db.users
 
 
-@auth.route("/register/", methods=("GET", "POST"))
+@auth.route("/register/", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         username = request.form.get("username")
@@ -47,7 +47,7 @@ def register():
     return render_template("register.html")
 
 
-@auth.route("/login/", methods=("GET", "POST"))
+@auth.route("/login/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form.get("username")
@@ -65,12 +65,12 @@ def login():
             session.clear()
             session["username"] = user["username"]
             session["id"] = str(user["_id"])
-            return redirect(url_for("rps.index"))
+            return redirect(url_for("rps.play"))
 
         flash(error)
 
     elif "username" in session:
-        return redirect(url_for("rps.game"))
+        return redirect(url_for("rps.play"))
 
     return render_template("login.html")
 

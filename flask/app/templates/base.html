@@ -19,7 +19,8 @@
 ] %}
 
 {% if session["username"] %}
-{% set navigation_bar = navigation_bar + [
+{% set navigation_bar = [
+    ('/mainpage', 'index_logged_in', 'Index'),
     ('/stats', 'stats', 'My Stats'),
     ('/auth/logout/', 'logout','Logout')
 ] %}
@@ -59,12 +60,6 @@
 
             <p>Copyright &copy; {% if current_year == 2021 %}2021{% else
             %}2021-{{current_year}}{% endif %} The A Team</p>
-
-
-            <!-- <a href="https://icons8.com/icon/26333/rock">Rock icon by Icons8</a>
-            <a target="_blank" href="https://icons8.com/icon/42472/question-mark">Question Mark</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
-            <a href="https://icons8.com/icon/6552/paper">Paper icon by Icons8</a>
-            <a href="https://icons8.com/icon/44376/hand-scissors">Hand Scissors icon by Icons8</a> -->
         </footer>
 
     </div>

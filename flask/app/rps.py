@@ -16,3 +16,8 @@ def play():
 @rps.route("/stats")
 def stats():
     return render_template("stats.html")
+
+
+@rps.route("/mainpage")
+def index_logged_in():
+    return render_template("index_logged_in.html")

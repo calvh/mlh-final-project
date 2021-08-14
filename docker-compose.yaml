@@ -15,7 +15,7 @@ services:
       - 27017:27017
 
   web:
-    container_name: flask
+    container_name: flask-rps
     build: ./flask
     restart: always
     env_file:
@@ -32,24 +32,21 @@ services:
       - mongodb
 
   nginx:
-    container_name: nginx
+    container_name: nginx-rps
     image: jonasal/nginx-certbot
     restart: unless-stopped
     env_file:
       - nginx.env
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      - ./nginx/user_conf.d:/etc/nginx/user_conf.d
-    ports:
-      - 80:80
-      - 443:443
+      - ./nginx-dev/user_conf.d:/etc/nginx/user_conf.d
     networks:
       - frontend-network
     depends_on:
       - web
 
   cadvisor:
-    container_name: cadvisor
+    container_name: cadvisor-rps
     image: gcr.io/cadvisor/cadvisor:latest
     restart: unless-stopped
     volumes:

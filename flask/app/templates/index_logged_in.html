@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% set active_page = "index" %}
+{% block title %} Index {% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Rock! Paper! Scissors! Showdown!! </h1>
+    <div class="flex-container">
+        <span class="circle-dot">
+            <img src="./static/img/icons8-rock-80.png"></img>
+        </span>
+        <span class="circle-dot">
+            <img src="./static/img/icons8-paper-80.png"></img>
+        </span>
+        <span class="circle-dot">
+            <img src="./static/img/icons8-hand-scissors-80.png"></img>
+        </span>
+    </div>
+    <div class="login-signup">
+        <button type="button" class="play-anon-btn"><a href="/play">Play Game</a></button>
+    </div>
+</div>
+{% endblock %}
