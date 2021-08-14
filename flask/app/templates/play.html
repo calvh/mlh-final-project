@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% set active_page = "play" %}
-{% block head_css %} <link rel="stylesheet" href="{{ url_for('static', filename='styles/play.css') }}"/>{% endblock%}
 {% block title %} Game {% endblock %}
+{% block head_css %} <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}" /> {% endblock %}
 {% block content %}
 
 <div class="container">
@@ -14,9 +14,9 @@
         <button id="btn-queue">Play against Human</button>
     </div>
     <div class="flex-container">
-        <p id="choice-player" ><img src="./static/img/female.png" alt="Avatar1"></p>
-        <p id="versus">VS</p>
-        <p id="choice-opponent"><img src="./static/img/male.png" alt="Avatar2"></p>
+        <p id="choice-player" ><img src="./static/img/female.png" alt="Avatar1" style="border-radius:50%; height: 300px; width: 300px;"></p>
+        <p style="margin-top: 150px; font-size:40px">VS</p>
+        <p id="choice-opponent"><img src="./static/img/male.png" alt="Avatar2" style="border-radius:50%; height: 300px; width: 300px;"></p>
     </div>
     <div class="flex-container">
         <span class="circle-dot" id="btn-rock">
@@ -30,11 +30,11 @@
         </span>
     </div>
     <button type="button" class="play-anon-btn" id="btn-play-again"
-        disabled>Play Again?</button>
+        style="border-radius: 15px;" disabled>Play Again?</button>
 </div>
 
 <section class="p-5 d-flex justify-content-center">
-    <div>
+    <div style="margin-top: 700px">
         <h3>Socket Status:</h3>
         <div id="socket-status"></div>
 
