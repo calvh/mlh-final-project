@@ -16,6 +16,30 @@ RPS is rock, paper, scissors built with Flask, and MongoDB on the
 backend, jQuery on the frontend, and SocketIO on frontend and backend.
 The app is designed to be run using Docker Compose.
 
+## Description
+
+To play anonymously:
+    1. click the [Play Anonymously] Button
+    2. Select to play against either the computer or another player
+        [Play against CPU] vs [Play against Human]
+    3. Then click on ONE of the Rock, Paper, Scissors choice
+    4. Result is immediate and will be displayed in the bar above
+        Wins: #x, Losses: #x, Draws: #x
+    5. To play again, click the button [Play Again?] to start a new game
+        Repeat steps 2 - 5 for as long as you like
+To play with an account:
+    1. Register an account by clicking on the [Register] Button
+    2. Enter a valid username & password to register, you will be redirected to the login page
+    3. Login with the credentials you registered earlier, you will be redirected to the game page.
+    4. Select to play against either the computer or another player
+        [Play against CPU] vs [Play against Human]
+    5. Then click on ONE of the Rock, Paper, Scissors choice
+    6. Result is immediate and will be displayed in the bar above
+        Wins: #x, Losses: #x, Draws: #x
+    7. To play again, click the button [Play Again?] to start a new game
+        Repeat steps 4 - 7 for as long as you like
+
+
 ## Deploying on a webserver
 
 Create `.env` files using the `.env.example` files as a template and set
