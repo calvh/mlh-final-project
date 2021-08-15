@@ -15,7 +15,7 @@
 </head>
 
 {% set navigation_bar = [
-('/', 'index', 'Index'),
+    ('/auth/register/', 'register','Register'),
 ] %}
 
 {% if session["username"] %}
@@ -25,8 +25,7 @@
 ] %}
 {% else %}
 {% set navigation_bar = navigation_bar + [
-    ('/auth/register/', 'register','Register'),
-    ('/auth/login/', 'login','Login')
+    ('/auth/login/', 'login','Login'),
 ] %}
 {% endif %}
 {% set active_page = active_page|default('index') %}
