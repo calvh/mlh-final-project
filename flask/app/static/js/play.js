@@ -27,19 +27,13 @@ $(document).ready(() => {
   const $btnSendGeneralChat = $("#btn-send-general-chat");
   const $btnSendRoomChat = $("#btn-send-room-chat");
 
-  const imgMale = `<img src="./static/img/male.png" style="border-radius:50%; height: 300px; width: 300px;"></img>`;
-  const imgFemale = `<img src="./static/img/female.png" style="border-radius:50%; height: 300px; width: 300px;"></img>`;
-  const imgRock = `<img src="./static/img/icons8-rock-80.png"></img>`;
-  const imgPaper = `<img src="./static/img/icons8-paper-80.png"></img>`;
-  const imgScissors = `<img src="./static/img/icons8-hand-scissors-80.png"></img>`;
-  const imgQuestion = `<img src="./static/img/icons8-question-mark-80.png"></img>`;
   const images = {
-    r: imgRock,
-    p: imgPaper,
-    s: imgScissors,
-    q: imgQuestion,
-    male: imgMale,
-    female: imgFemale,
+    r: "./static/img/icons8-rock-80.png",
+    p: "./static/img/icons8-paper-80.png",
+    s: "./static/img/icons8-hand-scissors-80.png",
+    q: "./static/img/icons8-question-mark-80.png",
+    male: "./static/img/male.png",
+    female: "./static/img/female.png",
   };
 
   class Game {
@@ -144,17 +138,16 @@ $(document).ready(() => {
   });
 
   const updatePlayerChoice = () => {
-    $choicePlayer.html(images[game.playerChoice]);
+    $choicePlayer.attr("src", images[game.playerChoice]);
   };
 
   const updateOpponentChoice = () => {
-    $choiceOpponent.html(images[game.opponentChoice]);
+    $choiceOpponent.attr("src", images[game.opponentChoice]);
   };
 
   const updateDisplay = () => {
     $gameStatus.text(game.status);
     $socketStatus.text(game.socketStatus);
-    $gameType.text(`Game type: ${game.gameType}`);
     $currentRoom.text(game.room);
     $opponent.text(game.opponent);
     $stats.text(
@@ -169,8 +162,8 @@ $(document).ready(() => {
     $btnPlayAgain.prop("disabled", true);
     game.reset(socket);
     updateDisplay();
-    $choicePlayer.html(images["q"]);
-    $choiceOpponent.html(images["q"]);
+    $choicePlayer.attr("src", images["q"]);
+    $choiceOpponent.attr("src", images["q"]);
   });
 
   $btnLeaveRoom.on("click", (event) => {
@@ -184,8 +177,8 @@ $(document).ready(() => {
     if (game.status === "CHOOSE_GAME_TYPE") {
       $btnPlayCpu.prop("disabled", true);
       $btnQueue.prop("disabled", true);
-      $choicePlayer.html(images["q"]);
-      $choiceOpponent.html(images["q"]);
+      $choicePlayer.attr("src", images["q"]);
+      $choiceOpponent.attr("src", images["q"]);
       game.gameType = "CPU";
       game.opponentChoice = Game.cpuChoose();
       game.status = "WAITING_PLAYER";
@@ -198,8 +191,8 @@ $(document).ready(() => {
     if (game.status === "CHOOSE_GAME_TYPE") {
       $btnPlayCpu.prop("disabled", true);
       $btnQueue.prop("disabled", true);
-      $choicePlayer.html(images["q"]);
-      $choiceOpponent.html(images["q"]);
+      $choicePlayer.attr("src", images["q"]);
+      $choiceOpponent.attr("src", images["q"]);
       socket.emit("queue");
       game.status = "QUEUE";
       updateDisplay();
