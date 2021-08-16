@@ -279,7 +279,10 @@ $(document).ready(() => {
 
   socket.on("connect", () => {
     console.log("connected");
-    $statusBar.removeClass("bg-danger").addClass("bg-success");
+    $statusBar
+      .removeClass("bg-danger")
+      .removeClass("bg-secondary")
+      .addClass("bg-success");
     game.playerName = socket.id;
     game.socketStatus = "CONNECTED";
     updateDisplay();
@@ -300,6 +303,9 @@ $(document).ready(() => {
     // TODO implement proper correction measures on frontend and backend
     if (reason === "io server disconnect") {
       // the disconnection was initiated by the server, you need to reconnect manually
+      game.socketStatus = "RECONNECTING";
+      $statusBar.removeClass("bg-danger").addClass("bg-secondary");
+      updateDisplay();
       socket.connect();
     }
     // else the socket will automatically try to reconnect
