@@ -6,7 +6,6 @@ $(document).ready(() => {
   const $gameStatus = $("#game-status");
   const $statusBar = $("#status-bar");
   const $stats = $("#game-stats");
-  const $gameType = $("#game-type");
   const $choicePlayer = $("#choice-player");
   const $choiceOpponent = $("#choice-opponent");
   const $socketStatus = $("#socket-status");
