@@ -1,7 +1,6 @@
 "use strict";
 
 $(document).ready(() => {
-  
   // initialize bootstrap toasts
   const toastElList = [].slice.call(document.querySelectorAll(".toast"));
   const toastList = toastElList.map(function (toastEl) {
@@ -369,23 +368,31 @@ $(document).ready(() => {
 
   // messages sent by unnamed events
   socket.on("message", (data) => {
-    const listHTML = `<li class="list-group-item">${data.username}: ${data.message}</li>`;
-    $chatMessages.append(listHTML);
+    $chatMessages.append(
+      $("<li>")
+        .addClass("list-group-item")
+        .text(`${data.username}: ${data.message}`)
+    );
   });
 
   socket.on("room chat", (data) => {
-    const listHTML = `<li class="list-group-item-secondary">${data.username}: ${data.message}</li>`;
-    $chatMessages.append(listHTML);
+    $chatMessages.append(
+      $("<li>")
+        .addClass("list-group-item-secondary")
+        .text(`${data.username}: ${data.message}`)
+    );
   });
 
   socket.on("general notification", (notification) => {
-    const listHTML = `<li class="list-group-item-info">${notification}</li>`;
-    $chatMessages.append(listHTML);
+    $chatMessages.append(
+      $("<li>").addClass("list-group-item-info").text(`${notification}`)
+    );
   });
 
   socket.on("room notification", (notification) => {
-    const listHTML = `<li class="list-group-item-danger">${notification}</li>`;
-    $chatMessages.append(listHTML);
+    $chatMessages.append(
+      $("<li>").addClass("list-group-item-danger").text(`${notification}`)
+    );
   });
 
   socket.on("user notification", (data) => {
@@ -414,6 +421,10 @@ $(document).ready(() => {
   });
 
   $toggleChat.on("click", (event) => {
-    $chatroom.toast("show");
+    if ($chatroom.hasClass("show")) {
+      $chatroom.toast("hide");
+    } else if ($chatroom.hasClass("hide")) {
+      $chatroom.toast("show");
+    }
   });
 });
