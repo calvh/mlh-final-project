@@ -8,10 +8,10 @@ $(document).ready(() => {
   const $gameType = $("#game-type");
   const $choicePlayer = $("#choice-player");
   const $choiceOpponent = $("#choice-opponent");
-  const $socketId = $("#socket-id");
   const $socketStatus = $("#socket-status");
   const $currentRoom = $("#current-room");
-  const $opponent = $("#opponent");
+  const $playerName = $("#player-name");
+  const $opponentName = $("#opponent-name");
   const $generalChatMessages = $("#general-chat-messages");
   const $roomChatMessages = $("#room-chat-messages");
   const $inputGeneralChat = $("#input-general-chat");
@@ -40,9 +40,10 @@ $(document).ready(() => {
     constructor() {
       this.status = "CHOOSE_GAME_TYPE";
       this.socketStatus = "DISCONNECTED";
+      this.playerName = null;
       this.gameType = null;
       this.room = null;
-      this.opponent = null;
+      this.opponentName = null;
       this.opponentChoice = null;
       this.playerChoice = null;
       this.wins = 0;
@@ -63,7 +64,7 @@ $(document).ready(() => {
         this.status = "CHOOSE_GAME_TYPE";
         this.gameType = null;
         this.room = null;
-        this.opponent = null;
+        this.opponentName = null;
         this.opponentChoice = null;
         this.playerChoice = null;
       }
@@ -149,7 +150,8 @@ $(document).ready(() => {
     $gameStatus.text(game.status);
     $socketStatus.text(game.socketStatus);
     $currentRoom.text(game.room);
-    $opponent.text(game.opponent);
+    $playerName.text(`${game.playerName} (you)`);
+    $opponentName.text(`${game.opponentName}`);
     $stats.text(
       `Wins: ${game.wins}, Losses: ${game.losses}, Draws: ${game.draws}`
     );
@@ -179,6 +181,7 @@ $(document).ready(() => {
       $btnQueue.prop("disabled", true);
       $choicePlayer.attr("src", images["q"]);
       $choiceOpponent.attr("src", images["q"]);
+      game.opponentName = "CPU";
       game.gameType = "CPU";
       game.opponentChoice = Game.cpuChoose();
       game.status = "WAITING_PLAYER";
@@ -275,7 +278,7 @@ $(document).ready(() => {
 
   socket.on("connect", () => {
     console.log("connected");
-    console.log(socket.id);
+    game.playerName = socket.id;
     game.socketStatus = "CONNECTED";
     updateDisplay();
   });
@@ -301,7 +304,7 @@ $(document).ready(() => {
 
   socket.on("joined room", (data) => {
     game.room = data.room;
-    game.opponent = data.opponent;
+    game.opponentName = data.opponent;
     game.status = "WAITING_BOTH";
     updateDisplay();
   });
