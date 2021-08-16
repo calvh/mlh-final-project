@@ -11,7 +11,7 @@
 
     <!-- avatars -->
     <div class="flex-container">
-        <div class="card bg-transparent" style="width: 18rem;">
+        <div class="card bg-transparent border-0" style="width: 18rem;">
             <img id="choice-player" src="./static/img/female.png" class="card-img-top" alt="player">
             <div class="card-body">
                 <h5 id="player-name" class="card-title">You</h5>
@@ -20,7 +20,7 @@
 
         <p style="margin-top: 150px; font-size:40px">VS</p>
 
-        <div class="card bg-transparent" style="width: 18rem;">
+        <div class="card bg-transparent border-0" style="width: 18rem;">
             <img id="choice-opponent" src="./static/img/male.png" class="card-img-top" alt="player">
             <div class="card-body">
                 <h5 id="opponent-name" class="card-title">Opponent</h5>
@@ -41,17 +41,21 @@
             <img src="./static/img/icons8-hand-scissors-80.png"></img>
         </span>
     </div>
+
     <div class="my-2">
         <button type="button" class="btn btn-warning" id="btn-play-cpu">Play against CPU</button>
         <button type="button" class="btn btn-warning" id="btn-queue">Play against Human</button>
         <button type="button" class="btn btn-warning" id="btn-play-again" disabled>Play Again?</button>
     </div>
+    <div id="status-bar" class="bg-gradient bg-danger w-auto mt-5 p-3 d-flex justify-content-between align-items-center">
+        <span id="socket-status" class="text-white fw-bold align-middle">DISCONNECTED</span>
+        <span id="current-room" class="text-white fw-bold align-middle">ROOM: null</span>
+        <button type="button" class="btn btn-primary">Chat &uarr;</button>
+    </div>
 </div>
 
 <section class="p-5 d-flex justify-content-center">
     <div style="margin-top: 700px">
-        <h3>Socket Status:</h3>
-        <div id="socket-status"></div>
 
 
         <h3>General Chatroom:</h3>
@@ -61,8 +65,6 @@
             <button id="btn-send-general-chat">Send</button>
         </div>
 
-        <h3>Current Room:</h3>
-        <div id="current-room"></div>
 
         <h3>Room Chatroom:</h3>
         <div>

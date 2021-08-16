@@ -4,6 +4,7 @@ $(document).ready(() => {
   const socket = io();
 
   const $gameStatus = $("#game-status");
+  const $statusBar = $("#status-bar");
   const $stats = $("#game-stats");
   const $gameType = $("#game-type");
   const $choicePlayer = $("#choice-player");
@@ -149,7 +150,7 @@ $(document).ready(() => {
   const updateDisplay = () => {
     $gameStatus.text(game.status);
     $socketStatus.text(game.socketStatus);
-    $currentRoom.text(game.room);
+    $currentRoom.text(`ROOM: ${game.room}`);
     $playerName.text(`${game.playerName} (you)`);
     $opponentName.text(`${game.opponentName}`);
     $stats.text(
@@ -278,6 +279,7 @@ $(document).ready(() => {
 
   socket.on("connect", () => {
     console.log("connected");
+    $statusBar.removeClass("bg-danger").addClass("bg-success");
     game.playerName = socket.id;
     game.socketStatus = "CONNECTED";
     updateDisplay();
@@ -289,6 +291,7 @@ $(document).ready(() => {
     $btnPlayCpu.prop("disabled", true);
     $btnQueue.prop("disabled", true);
     game.socketStatus = "DISCONNECTED";
+    $statusBar.removeClass("bg-success").addClass("bg-danger");
     game.reset(socket);
     $choicePlayer.html(images["q"]);
     $choiceOpponent.html(images["q"]);
