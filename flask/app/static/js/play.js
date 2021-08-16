@@ -1,6 +1,13 @@
 "use strict";
 
 $(document).ready(() => {
+  
+  // initialize bootstrap toasts
+  const toastElList = [].slice.call(document.querySelectorAll(".toast"));
+  const toastList = toastElList.map(function (toastEl) {
+    return new bootstrap.Toast(toastEl);
+  });
+
   const socket = io();
 
   const $gameStatus = $("#game-status");
@@ -12,10 +19,11 @@ $(document).ready(() => {
   const $currentRoom = $("#current-room");
   const $playerName = $("#player-name");
   const $opponentName = $("#opponent-name");
-  const $generalChatMessages = $("#general-chat-messages");
-  const $roomChatMessages = $("#room-chat-messages");
-  const $inputGeneralChat = $("#input-general-chat");
-  const $inputRoomChat = $("#input-room-chat");
+
+  const $chatroom = $("#chatroom");
+  const $toggleChat = $("#toggle-chat");
+  const $chatMessages = $("#chat-messages");
+  const $inputChat = $("#input-chat");
 
   const $btnRock = $("#btn-rock");
   const $btnPaper = $("#btn-paper");
@@ -294,7 +302,7 @@ $(document).ready(() => {
   $btnSendGeneralChat.on("click", (event) => {
     event.preventDefault();
 
-    const message = $inputGeneralChat.val().trim();
+    const message = $inputChat.val().trim();
 
     if (message) {
       socket.emit("general chat", {
@@ -306,7 +314,7 @@ $(document).ready(() => {
   $btnSendRoomChat.on("click", (event) => {
     event.preventDefault();
 
-    const message = $inputRoomChat.val().trim();
+    const message = $inputChat.val().trim();
 
     if (game.room && message) {
       socket.emit("room chat", {
@@ -361,23 +369,23 @@ $(document).ready(() => {
 
   // messages sent by unnamed events
   socket.on("message", (data) => {
-    const listHTML = `<li class="chat">${data.username}: ${data.message}</li>`;
-    $generalChatMessages.append(listHTML);
+    const listHTML = `<li class="list-group-item">${data.username}: ${data.message}</li>`;
+    $chatMessages.append(listHTML);
   });
 
   socket.on("room chat", (data) => {
-    const listHTML = `<li class="chat">${data.username}: ${data.message}</li>`;
-    $roomChatMessages.append(listHTML);
+    const listHTML = `<li class="list-group-item-secondary">${data.username}: ${data.message}</li>`;
+    $chatMessages.append(listHTML);
   });
 
   socket.on("general notification", (notification) => {
-    const listHTML = `<li class="notification">${notification}</li>`;
-    $generalChatMessages.append(listHTML);
+    const listHTML = `<li class="list-group-item-info">${notification}</li>`;
+    $chatMessages.append(listHTML);
   });
 
   socket.on("room notification", (notification) => {
-    const listHTML = `<li class="notification">${notification}</li>`;
-    $roomChatMessages.append(listHTML);
+    const listHTML = `<li class="list-group-item-danger">${notification}</li>`;
+    $chatMessages.append(listHTML);
   });
 
   socket.on("user notification", (data) => {
@@ -403,5 +411,9 @@ $(document).ready(() => {
     if (game.status === "ENDED") {
       $btnPlayAgain.prop("disabled", false);
     }
+  });
+
+  $toggleChat.on("click", (event) => {
+    $chatroom.toast("show");
   });
 });
