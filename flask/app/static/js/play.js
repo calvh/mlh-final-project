@@ -167,11 +167,6 @@ $(document).ready(() => {
     $choiceOpponent.attr("src", images["q"]);
   });
 
-  $btnLeaveRoom.on("click", (event) => {
-    event.preventDefault();
-    game.leaveRoom();
-  });
-
   // automatically make choice for CPU
   $btnPlayCpu.on("click", (event) => {
     event.preventDefault();
