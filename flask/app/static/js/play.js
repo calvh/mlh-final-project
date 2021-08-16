@@ -56,6 +56,35 @@ $(document).ready(() => {
       this.draws = 0;
     }
 
+    set setWins(newWin) {
+      this.wins = newWin;
+    }
+    set setLosses(newLoss) {
+      this.losses = newLoss;
+    }
+    set setDraws(newDraw) {
+      this.draws = newDraw;
+    }
+    get getWins() {
+      return this.wins;
+    }
+    get getLosses() {
+      return this.losses;
+    }
+    get getDraws() {
+      return this.draws;
+    }
+
+    allScores() {
+      const game_score = {
+        wins: this.getWins,
+        losses: this.getLosses,
+        draws: this.getDraws,
+      };
+      // const scoreJSON = JSON.stringify(game_score);
+      return game_score;
+    }
+
     leaveRoom(socket) {
       if (this.room) {
         // trigger server to initiate leave room
@@ -112,12 +141,15 @@ $(document).ready(() => {
             switch (result) {
               case "w":
                 this.wins += 1;
+                // this.setWins(this.getWins()+=1);
                 break;
               case "l":
                 this.losses += 1;
+                // this.setLosses(this.getLosses()+=1);
                 break;
               case "d":
                 this.draws += 1;
+                // this.setDraws(this.getDraws()+=1);
                 break;
               default:
                 // error
@@ -135,7 +167,7 @@ $(document).ready(() => {
           break;
       }
     }
-  }
+  } //END OF CLASS GAME
 
   const game = new Game();
 
@@ -215,12 +247,26 @@ $(document).ready(() => {
       game.playerChoice = choice;
       updatePlayerChoice();
       game.processChoices();
+      const scores = game.allScores();
+      console.log(JSON.stringify(scores));
+      $.ajax({
+        url: "/scores",
+        contentType: "application/json",
+        type: "PUT",
+        data: JSON.stringify(scores),
+        success: function (response) {
+          console.log(response);
+        },
+        error: function (error) {
+          console.log(error);
+        },
+      });
       if (game.status === "ENDED") {
         $btnPlayAgain.prop("disabled", false);
       }
     }
 
-    // vs human
+    // PLAY vs human
     if (game.status === "WAITING_BOTH" || game.status === "WAITING_PLAYER") {
       if (game.room) {
         game.playerChoice = choice;
@@ -239,7 +285,8 @@ $(document).ready(() => {
         console.log("ERROR_NOT_IN_ROOM");
       }
     }
-  };
+  }; //end of handlePlayerButton()
+
   $btnRock.on("click", (event) => {
     event.preventDefault();
     handlePlayerButton("r");
@@ -349,4 +396,4 @@ $(document).ready(() => {
       $btnPlayAgain.prop("disabled", false);
     }
   });
-});
+}); //END OF DOCUMENT.READY
