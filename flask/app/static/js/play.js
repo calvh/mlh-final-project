@@ -22,7 +22,6 @@ $(document).ready(() => {
   const $btnScissors = $("#btn-scissors");
   const $btnPlayAgain = $("#btn-play-again");
   const $btnPlayCpu = $("#btn-play-cpu");
-  const $btnLeaveRoom = $("#btn-leave-room");
   const $btnQueue = $("#btn-queue");
   const $btnSendGeneralChat = $("#btn-send-general-chat");
   const $btnSendRoomChat = $("#btn-send-room-chat");
