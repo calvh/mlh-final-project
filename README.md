@@ -16,6 +16,8 @@ RPS is rock, paper, scissors built with Flask, and MongoDB on the
 backend, jQuery on the frontend, and SocketIO on frontend and backend.
 The app is designed to be run using Docker Compose.
 
+Play it at https://rockpaperscissors.duckdns.org/
+
 ## Description
 
 To play anonymously:
