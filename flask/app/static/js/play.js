@@ -276,7 +276,8 @@ $(document).ready(() => {
           updateDisplay();
         }
         game.processChoices();
-        updateScoresDB();
+        const result = game.processChoices();
+        incScoresDB(result);
         if (game.status === "ENDED") {
           $btnPlayAgain.prop("disabled", false);
         }
