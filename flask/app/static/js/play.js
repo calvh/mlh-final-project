@@ -50,6 +50,34 @@ $(document).ready(() => {
       this.draws = 0;
     }
 
+    set setWins(newWin) {
+      this._wins = newWin;
+    }
+    set setLosses(newLoss) {
+      this._losses = newLoss;
+    }
+    set setDraws(newDraw) {
+      this._draws = newDraw;
+    }
+    get getWins() {
+      return this._wins;
+    }
+    get getLosses() {
+      return this._losses;
+    }
+    get getDraws() {
+      return this._draws;
+    }
+
+    allScores() {
+      const game_score = {
+        wins: this.getWins,
+        losses: this.getLosses,
+        draws: this.getDraws,
+      };
+      return game_score;
+    }
+
     leaveRoom(socket) {
       if (this.room) {
         // trigger server to initiate leave room
@@ -93,14 +121,13 @@ $(document).ready(() => {
       return choices[Math.floor(Math.random() * choices.length)];
     }
 
-    processChoices() {
+    processChoices(updateDisplayFunction, updateDBFunction) {
       switch (this.status) {
         case "WAITING_PLAYER":
         case "WAITING_OPPONENT":
           if (this.playerChoice && this.opponentChoice) {
             const c1 = this.playerChoice;
             const c2 = this.opponentChoice;
-            updateOpponentChoice();
             const result = Game.calculateResult(c1, c2);
 
             switch (result) {
@@ -115,21 +142,20 @@ $(document).ready(() => {
                 break;
               default:
                 // error
-                console.log(result);
                 break;
             }
-
             this.status = "ENDED";
-            updateDisplay();
+            updateDBFunction(result);
+            updateDisplayFunction();
           }
-          break;
 
         default:
-          // do nothing
+          // game.status is one of:
+          // "CHOOSE_GAME_TYPE", "WAITING_BOTH", "ENDED"
           break;
       }
     }
-  }
+  } //END OF CLASS GAME
 
   const game = new Game();
 
@@ -167,7 +193,6 @@ $(document).ready(() => {
     $choiceOpponent.attr("src", images["q"]);
   });
 
-  // automatically make choice for CPU
   $btnPlayCpu.on("click", (event) => {
     event.preventDefault();
     if (game.status === "CHOOSE_GAME_TYPE") {
@@ -196,6 +221,18 @@ $(document).ready(() => {
     }
   });
 
+  const updateDB = (result) => {
+    // send PUT request to database to update score for player
+    $.ajax({
+      type: "PUT",
+      url: "/scores",
+      contentType: "application/json",
+      data: JSON.stringify({ result }),
+    })
+      .done((response) => console.log("DB updated"))
+      .fail((response) => console.log("DB Error: could not update score"));
+  };
+
   const handlePlayerButton = (choice) => {
     if (game.playerChoice) {
       return;
@@ -204,32 +241,41 @@ $(document).ready(() => {
     if (game.gameType === "CPU") {
       game.playerChoice = choice;
       updatePlayerChoice();
-      game.processChoices();
+      game.processChoices(updateDisplay, updateDB);
       if (game.status === "ENDED") {
         $btnPlayAgain.prop("disabled", false);
       }
     }
 
-    // vs human
+    // human opponent
     if (game.status === "WAITING_BOTH" || game.status === "WAITING_PLAYER") {
-      if (game.room) {
-        game.playerChoice = choice;
-        socket.emit("choice", { choice });
-        updatePlayerChoice();
-
-        if (game.status === "WAITING_BOTH") {
-          game.status = "WAITING_OPPONENT";
-          updateDisplay();
-        }
-        game.processChoices();
-        if (game.status === "ENDED") {
-          $btnPlayAgain.prop("disabled", false);
-        }
-      } else {
+      if (!game.room) {
         console.log("ERROR_NOT_IN_ROOM");
+        return;
+      }
+
+      game.playerChoice = choice;
+      socket.emit("choice", { choice });
+      updatePlayerChoice();
+
+      // opponent hasn't made choice, wait for opponent
+      if (game.status === "WAITING_BOTH") {
+        game.status = "WAITING_OPPONENT";
+        updateDisplay();
+        return;
+      }
+
+      if (game.status === "WAITING_PLAYER") {
+        updateOpponentChoice();
+        game.processChoices(updateDisplay, updateDB);
+      }
+
+      if (game.status === "ENDED") {
+        $btnPlayAgain.prop("disabled", false);
       }
     }
   };
+
   $btnRock.on("click", (event) => {
     event.preventDefault();
     handlePlayerButton("r");
@@ -272,11 +318,13 @@ $(document).ready(() => {
 
   socket.on("connect", () => {
     console.log("connected");
+
     $statusBar
       .removeClass("bg-danger")
       .removeClass("bg-secondary")
       .addClass("bg-success");
     game.playerName = socket.id;
+
     game.socketStatus = "CONNECTED";
     updateDisplay();
   });
@@ -302,7 +350,7 @@ $(document).ready(() => {
       socket.connect();
     }
     // else the socket will automatically try to reconnect
-  });
+  }); //end of socket.on("disconnect")
 
   socket.on("joined room", (data) => {
     game.room = data.room;
@@ -338,11 +386,20 @@ $(document).ready(() => {
 
   socket.on("choice", (data) => {
     game.opponentChoice = data.choice;
+
+    // player hasn't made choice, wait for player
     if (game.status === "WAITING_BOTH") {
       game.status = "WAITING_PLAYER";
       updateDisplay();
+      return;
     }
-    game.processChoices();
+
+    // player already made choice
+    if (game.status === "WAITING_OPPONENT") {
+      updateOpponentChoice();
+      game.processChoices(updateDisplay, updateDB);
+    }
+
     if (game.status === "ENDED") {
       $btnPlayAgain.prop("disabled", false);
     }
