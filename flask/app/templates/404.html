@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 {% set active_page = "404" %}
+{% block head_css%} <link rel="stylesheet" href="{{ url_for('static', filename='styles/404.css') }}"/> {% endblock %}
 {% block title %} 404 Error {% endblock %}
 {% block content %}
   <body>
-    <div style="width: 80%; margin: 50%; height: 200px; margin: auto; padding: 40px; background-color: #de7a22;"">
-      <h1 style="padding: 10px;"><b>404 error.</b> This page was not found.</h1>
-      <button type="button" style= "padding: 20px; margin: 200px; font-size: larger; background-color: #6ab187;"><a href="/">Go Back to Home Page</a></button>
-    </div>
+      <h1 class="hdr"><b>404 error.</b> This page was not found.</h1>
+      <button type="button" class="homeButton"><a href="/">Go Back to Home Page</a></button>
   </body>
   {% endblock %}

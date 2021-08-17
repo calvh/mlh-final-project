@@ -1,65 +1,83 @@
 {% extends 'base.html' %}
 {% set active_page = "play" %}
-{% block title %} Game {% endblock %}
+{% block title %} Play {% endblock %}
+{% block head_css %} <link rel="stylesheet" href="{{ url_for('static', filename='styles/play.css') }}" /> {% endblock %}
 {% block content %}
 
 <div class="container">
-    <h1>Rock! Paper! Scissors! Showdown </h1>
+
+    <!-- status bars -->
     <h1 id="game-stats">Wins: 0, Losses: 0, Draws: 0</h1>
     <h1 id="game-status">Choose Game Type</h1>
-    <h2 id="game-type">Game type: ?</h1>
+
+    <!-- avatars -->
+    <div class="row justify-content-around">
+        <div class="col-5 d-flex justify-content-center">
+            <div class="card bg-transparent border-0" style="width: 18rem;">
+                <img id="choice-player" src="./static/img/female.png" class="card-img-top" alt="player">
+                <div class="card-body">
+                    <h5 id="player-name" class="card-title">You</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-1 d-flex align-items-center justify-content-center">
+            <span class="fs-1">VS</span>
+        </div>
+
+        <div class="col-5 d-flex justify-content-center">
+            <div class="card bg-transparent border-0" style="width: 18rem;">
+                <img id="choice-opponent" src="./static/img/male.png" class="card-img-top" alt="player">
+                <div class="card-body">
+                    <h5 id="opponent-name" class="card-title">Opponent</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-container">
+        <button type="button" class="circle-dot" id="btn-rock">
+            <img style="margin: 5px;" src="./static/img/icons8-rock-80.png"></img>
+        </button>
+        <button type="button" class="circle-dot" id="btn-paper">
+            <img style="margin: 5px;" src="./static/img/icons8-paper-80.png"></img>
+        </button>
+        <button type="button" class="circle-dot" id="btn-scissors">
+            <img style="margin: 5px;" src="./static/img/icons8-hand-scissors-80.png"></img>
+        </button>
+    </div>
+
+    <!-- game options -->
     <div class="my-2">
-        <button id="btn-play-cpu">Play against CPU</button>
-        <button id="btn-queue">Play against Human</button>
+        <button type="button" class="btn btn-warning" id="btn-play-cpu">Play against CPU</button>
+        <button type="button" class="btn btn-warning" id="btn-queue">Play against Human</button>
+        <button type="button" class="btn btn-warning" id="btn-play-again" disabled>Play Again?</button>
     </div>
-    <div class="flex-container">
-        <p id="choice-player" ><img src="./static/img/female.png" alt="Avatar1" style="border-radius:50%; height: 300px; width: 300px;"></p>
-        <p style="margin-top: 150px; font-size:40px">VS</p>
-        <p id="choice-opponent"><img src="./static/img/male.png" alt="Avatar2" style="border-radius:50%; height: 300px; width: 300px;"></p>
+
+    <!-- status bar -->
+    <div class="accordion accordion-flush fixed-bottom" id="accordion">
+        <div class="accordion-item w-25" >
+            <div id="flush-collapse" class="accordion-collapse collapse bg-white" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                    <ul id="general-chat-messages"></ul>
+                    <ul id="room-chat-messages"></ul>
+                    <div class="input-group mb-3">
+                        <input id="input-general-chat" type="text" class="form-control" placeholder="Message">
+                        <button id="btn-send-room-chat" class="btn btn-outline-secondary" type="button">Room</button>
+                        <button id="btn-send-general-chat" class="btn btn-outline-secondary" type="button">All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="status-bar" class="py-2 px-4 accordion-header bg-gradient bg-danger d-flex justify-content-between align-items-center">
+            <button class="btn btn-warning collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse">
+                Chat
+            </button>
+            <span id="socket-status" class="text-white fw-bold align-middle">DISCONNECTED</span>
+            <span id="current-room" class="text-white fw-bold align-middle" style="overflow: hidden; text-overflow: ellipsis; max-width: 12ch;">ROOM: null</span>
+        </div>
     </div>
-    <div class="flex-container">
-        <span class="circle-dot" id="btn-rock">
-            <img src="./static/img/icons8-rock-80.png"></img>
-        </span>
-        <span class="circle-dot" id="btn-paper">
-            <img src="./static/img/icons8-paper-80.png"></img>
-        </span>
-        <span class="circle-dot" id="btn-scissors">
-            <img src="./static/img/icons8-hand-scissors-80.png"></img>
-        </span>
-    </div>
-    <button type="button" class="play-anon-btn" id="btn-play-again"
-        style="border-radius: 15px;" disabled>Play Again?</button>
 </div>
 
-<section class="p-5 d-flex justify-content-center">
-    <div style="margin-top: 700px">
-        <h3>Socket Status:</h3>
-        <div id="socket-status"></div>
-
-
-        <h3>General Chatroom:</h3>
-        <div>
-            <ul id="general-chat-messages"></ul>
-            <input type="text" id="input-general-chat" />
-            <button id="btn-send-general-chat">Send</button>
-        </div>
-
-        <h3>Current Room:</h3>
-        <div id="current-room"></div>
-
-        <h3>Opponent:</h3>
-        <div id="opponent"></div>
-
-        <h3>Room Chatroom:</h3>
-        <div>
-            <ul id="room-chat-messages"></ul>
-            <input type="text" id="input-room-chat" />
-            <button id="btn-send-room-chat">Send</button>
-            <button id="btn-leave-room">LEAVE ROOM</button>
-        </div>
-    </div>
-</section>
 <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
 <script src="./static/js/play.js"></script>
 {% endblock %}

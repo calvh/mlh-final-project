@@ -23,8 +23,6 @@ services:
       - flask.env
     volumes:
       - ./flask:/flask
-    ports:
-      - 5000:5000
     networks:
       - backend-network
       - frontend-network

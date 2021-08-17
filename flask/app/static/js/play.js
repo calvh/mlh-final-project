@@ -4,14 +4,14 @@ $(document).ready(() => {
   const socket = io();
 
   const $gameStatus = $("#game-status");
+  const $statusBar = $("#status-bar");
   const $stats = $("#game-stats");
-  const $gameType = $("#game-type");
   const $choicePlayer = $("#choice-player");
   const $choiceOpponent = $("#choice-opponent");
-  const $socketId = $("#socket-id");
   const $socketStatus = $("#socket-status");
   const $currentRoom = $("#current-room");
-  const $opponent = $("#opponent");
+  const $playerName = $("#player-name");
+  const $opponentName = $("#opponent-name");
   const $generalChatMessages = $("#general-chat-messages");
   const $roomChatMessages = $("#room-chat-messages");
   const $inputGeneralChat = $("#input-general-chat");
@@ -22,33 +22,27 @@ $(document).ready(() => {
   const $btnScissors = $("#btn-scissors");
   const $btnPlayAgain = $("#btn-play-again");
   const $btnPlayCpu = $("#btn-play-cpu");
-  const $btnLeaveRoom = $("#btn-leave-room");
   const $btnQueue = $("#btn-queue");
   const $btnSendGeneralChat = $("#btn-send-general-chat");
   const $btnSendRoomChat = $("#btn-send-room-chat");
 
-  const imgMale = `<img src="./static/img/male.png" style="border-radius:50%; height: 300px; width: 300px;"></img>`;
-  const imgFemale = `<img src="./static/img/female.png" style="border-radius:50%; height: 300px; width: 300px;"></img>`;
-  const imgRock = `<img src="./static/img/icons8-rock-80.png"></img>`;
-  const imgPaper = `<img src="./static/img/icons8-paper-80.png"></img>`;
-  const imgScissors = `<img src="./static/img/icons8-hand-scissors-80.png"></img>`;
-  const imgQuestion = `<img src="./static/img/icons8-question-mark-80.png"></img>`;
   const images = {
-    r: imgRock,
-    p: imgPaper,
-    s: imgScissors,
-    q: imgQuestion,
-    male: imgMale,
-    female: imgFemale,
+    r: "./static/img/icons8-rock-80.png",
+    p: "./static/img/icons8-paper-80.png",
+    s: "./static/img/icons8-hand-scissors-80.png",
+    q: "./static/img/icons8-question-mark-80.png",
+    male: "./static/img/male.png",
+    female: "./static/img/female.png",
   };
 
   class Game {
     constructor() {
       this.status = "CHOOSE_GAME_TYPE";
       this.socketStatus = "DISCONNECTED";
+      this.playerName = null;
       this.gameType = null;
       this.room = null;
-      this.opponent = null;
+      this.opponentName = null;
       this.opponentChoice = null;
       this.playerChoice = null;
       this.wins = 0;
@@ -97,7 +91,7 @@ $(document).ready(() => {
         this.status = "CHOOSE_GAME_TYPE";
         this.gameType = null;
         this.room = null;
-        this.opponent = null;
+        this.opponentName = null;
         this.opponentChoice = null;
         this.playerChoice = null;
       }
@@ -170,19 +164,19 @@ $(document).ready(() => {
   });
 
   const updatePlayerChoice = () => {
-    $choicePlayer.html(images[game.playerChoice]);
+    $choicePlayer.attr("src", images[game.playerChoice]);
   };
 
   const updateOpponentChoice = () => {
-    $choiceOpponent.html(images[game.opponentChoice]);
+    $choiceOpponent.attr("src", images[game.opponentChoice]);
   };
 
   const updateDisplay = () => {
     $gameStatus.text(game.status);
     $socketStatus.text(game.socketStatus);
-    $gameType.text(`Game type: ${game.gameType}`);
-    $currentRoom.text(game.room);
-    $opponent.text(game.opponent);
+    $currentRoom.text(`ROOM: ${game.room}`);
+    $playerName.text(`${game.playerName} (you)`);
+    $opponentName.text(`${game.opponentName}`);
     $stats.text(
       `Wins: ${game.wins}, Losses: ${game.losses}, Draws: ${game.draws}`
     );
@@ -195,13 +189,8 @@ $(document).ready(() => {
     $btnPlayAgain.prop("disabled", true);
     game.reset(socket);
     updateDisplay();
-    $choicePlayer.html(images["q"]);
-    $choiceOpponent.html(images["q"]);
-  });
-
-  $btnLeaveRoom.on("click", (event) => {
-    event.preventDefault();
-    game.leaveRoom();
+    $choicePlayer.attr("src", images["q"]);
+    $choiceOpponent.attr("src", images["q"]);
   });
 
   $btnPlayCpu.on("click", (event) => {
@@ -209,8 +198,9 @@ $(document).ready(() => {
     if (game.status === "CHOOSE_GAME_TYPE") {
       $btnPlayCpu.prop("disabled", true);
       $btnQueue.prop("disabled", true);
-      $choicePlayer.html(images["q"]);
-      $choiceOpponent.html(images["q"]);
+      $choicePlayer.attr("src", images["q"]);
+      $choiceOpponent.attr("src", images["q"]);
+      game.opponentName = "CPU";
       game.gameType = "CPU";
       game.opponentChoice = Game.cpuChoose();
       game.status = "WAITING_PLAYER";
@@ -223,8 +213,8 @@ $(document).ready(() => {
     if (game.status === "CHOOSE_GAME_TYPE") {
       $btnPlayCpu.prop("disabled", true);
       $btnQueue.prop("disabled", true);
-      $choicePlayer.html(images["q"]);
-      $choiceOpponent.html(images["q"]);
+      $choicePlayer.attr("src", images["q"]);
+      $choiceOpponent.attr("src", images["q"]);
       socket.emit("queue");
       game.status = "QUEUE";
       updateDisplay();
@@ -328,6 +318,13 @@ $(document).ready(() => {
 
   socket.on("connect", () => {
     console.log("connected");
+
+    $statusBar
+      .removeClass("bg-danger")
+      .removeClass("bg-secondary")
+      .addClass("bg-success");
+    game.playerName = socket.id;
+
     game.socketStatus = "CONNECTED";
     updateDisplay();
   });
@@ -338,6 +335,7 @@ $(document).ready(() => {
     $btnPlayCpu.prop("disabled", true);
     $btnQueue.prop("disabled", true);
     game.socketStatus = "DISCONNECTED";
+    $statusBar.removeClass("bg-success").addClass("bg-danger");
     game.reset(socket);
     $choicePlayer.html(images["q"]);
     $choiceOpponent.html(images["q"]);
@@ -346,6 +344,9 @@ $(document).ready(() => {
     // TODO implement proper correction measures on frontend and backend
     if (reason === "io server disconnect") {
       // the disconnection was initiated by the server, you need to reconnect manually
+      game.socketStatus = "RECONNECTING";
+      $statusBar.removeClass("bg-danger").addClass("bg-secondary");
+      updateDisplay();
       socket.connect();
     }
     // else the socket will automatically try to reconnect
@@ -353,7 +354,7 @@ $(document).ready(() => {
 
   socket.on("joined room", (data) => {
     game.room = data.room;
-    game.opponent = data.opponent;
+    game.opponentName = data.opponent;
     game.status = "WAITING_BOTH";
     updateDisplay();
   });
