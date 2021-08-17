@@ -57,22 +57,22 @@ $(document).ready(() => {
     }
 
     set setWins(newWin) {
-      this.wins = newWin;
+      this._wins = newWin;
     }
     set setLosses(newLoss) {
-      this.losses = newLoss;
+      this._losses = newLoss;
     }
     set setDraws(newDraw) {
-      this.draws = newDraw;
+      this._draws = newDraw;
     }
     get getWins() {
-      return this.wins;
+      return this._wins;
     }
     get getLosses() {
-      return this.losses;
+      return this._losses;
     }
     get getDraws() {
-      return this.draws;
+      return this._draws;
     }
 
     allScores() {
