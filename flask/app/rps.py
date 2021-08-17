@@ -1,7 +1,8 @@
 from bson.objectid import ObjectId
-from bson.json_util import dumps
+from bson.json_util import dumps, loads
+import json
 
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request, session, jsonify
 
 from app.db import client
 
@@ -21,9 +22,9 @@ def play():
     return render_template("play.html")
 
 
-@rps.route("/stats")
-def stats():
-    return render_template("stats.html")
+# @rps.route("/stats")
+# def stats():
+#     return render_template("stats.html")
 
 
 @rps.route("/scores", methods=["GET", "PUT"])
@@ -38,7 +39,11 @@ def scores():
         db_result = Users.find_one({"_id": ObjectId(id)}, {"gameScore": 1})
 
         if db_result:
-            return dumps(db_result["gameScore"]), 200
+            # db_dump = dumps(db_result["gameScore"])
+            json_db = loads(dumps(db_result["gameScore"]))
+            return render_template("stats.html", json_db=json_db)
+            # return dumps(db_result["gameScore"]), 200
+
 
         return "NOT_FOUND", 404
 
