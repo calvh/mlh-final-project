@@ -23,6 +23,7 @@ def play():
 def stats():
     return render_template("stats.html")
 
+
 @rps.route("/scores", methods=["PUT"])
 def inc_scores():
     if request.method == "PUT":
@@ -31,19 +32,16 @@ def inc_scores():
         # insert/update in DB
         if result == "w":
             Users.update_one(
-                {"username": username},
-                {"$inc": {"gameScore.wins": 1}}
+                {"username": username}, {"$inc": {"gameScore.wins": 1}}
             )
         elif result == "l":
             Users.update_one(
-                {"username": username},
-                {"$inc": {"gameScore.losses": 1}}
+                {"username": username}, {"$inc": {"gameScore.losses": 1}}
             )
         elif result == "d":
             Users.update_one(
-                {"username": username},
-                {"$inc": {"gameScore.draws": 1}}
+                {"username": username}, {"$inc": {"gameScore.draws": 1}}
             )
-    return json.dumps({"status": "OK",
-                       "user is ": username,
-                       "\ngame-score": result})
+    return json.dumps(
+        {"status": "OK", "user is ": username, "\ngame-score": result}
+    )
