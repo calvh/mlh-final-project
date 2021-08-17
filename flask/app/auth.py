@@ -36,7 +36,7 @@ def register():
             # TODO add error handling for failed insert
             user = {
                 "username": username,
-                "password": generate_password_hash(password)
+                "password": generate_password_hash(password),
             }
             Users.insert_one(user).inserted_id
             flash("Register successful, please login.")
