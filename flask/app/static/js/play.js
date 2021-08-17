@@ -81,7 +81,6 @@ $(document).ready(() => {
         losses: this.getLosses,
         draws: this.getDraws,
       };
-      // const scoreJSON = JSON.stringify(game_score);
       return game_score;
     }
 
@@ -132,35 +131,31 @@ $(document).ready(() => {
       switch (this.status) {
         case "WAITING_PLAYER":
         case "WAITING_OPPONENT":
+          let result;
           if (this.playerChoice && this.opponentChoice) {
             const c1 = this.playerChoice;
             const c2 = this.opponentChoice;
             updateOpponentChoice();
-            const result = Game.calculateResult(c1, c2);
+            result = Game.calculateResult(c1, c2);
 
             switch (result) {
               case "w":
                 this.wins += 1;
-                // this.setWins(this.getWins()+=1);
                 break;
               case "l":
                 this.losses += 1;
-                // this.setLosses(this.getLosses()+=1);
                 break;
               case "d":
                 this.draws += 1;
-                // this.setDraws(this.getDraws()+=1);
                 break;
               default:
                 // error
-                console.log(result);
                 break;
             }
-
             this.status = "ENDED";
             updateDisplay();
           }
-          break;
+          return result;
 
         default:
           // do nothing
@@ -238,6 +233,21 @@ $(document).ready(() => {
     }
   });
 
+  const incScoresDB = (result) => {
+    $.ajax({
+      url: "/scores",
+      contentType: "application/json",
+      type: "PUT",
+      data: JSON.stringify({ result }),
+      success: function (response) {
+        console.log(response);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    }); //end of AJAX
+  };
+
   const handlePlayerButton = (choice) => {
     if (game.playerChoice) {
       return;
@@ -246,21 +256,8 @@ $(document).ready(() => {
     if (game.gameType === "CPU") {
       game.playerChoice = choice;
       updatePlayerChoice();
-      game.processChoices();
-      const scores = game.allScores();
-      console.log(JSON.stringify(scores));
-      $.ajax({
-        url: "/scores",
-        contentType: "application/json",
-        type: "PUT",
-        data: JSON.stringify(scores),
-        success: function (response) {
-          console.log(response);
-        },
-        error: function (error) {
-          console.log(error);
-        },
-      });
+      const result = game.processChoices();
+      incScoresDB(result);
       if (game.status === "ENDED") {
         $btnPlayAgain.prop("disabled", false);
       }
@@ -272,12 +269,12 @@ $(document).ready(() => {
         game.playerChoice = choice;
         socket.emit("choice", { choice });
         updatePlayerChoice();
-
         if (game.status === "WAITING_BOTH") {
           game.status = "WAITING_OPPONENT";
           updateDisplay();
         }
         game.processChoices();
+        updateScoresDB();
         if (game.status === "ENDED") {
           $btnPlayAgain.prop("disabled", false);
         }
@@ -312,7 +309,7 @@ $(document).ready(() => {
         message,
       });
     }
-  });
+  }); //end of function $btnSendGeneralChat
 
   $btnSendRoomChat.on("click", (event) => {
     event.preventDefault();
@@ -351,7 +348,7 @@ $(document).ready(() => {
       socket.connect();
     }
     // else the socket will automatically try to reconnect
-  });
+  }); //end of socket.on("disconnect")
 
   socket.on("joined room", (data) => {
     game.room = data.room;
@@ -395,5 +392,5 @@ $(document).ready(() => {
     if (game.status === "ENDED") {
       $btnPlayAgain.prop("disabled", false);
     }
-  });
+  }); //end of socket.on("choice")
 }); //END OF DOCUMENT.READY
