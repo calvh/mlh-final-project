@@ -40,7 +40,7 @@ def scores():
         Users.update_one(
             {"username": username},
             {"$set": {"gameScore": score_data}},
-            upsert=True
+            upsert=True,
         )
     return json.dumps(
         {"\nstatus": "OK", "user is": username, "\ngame-score": score_data}
