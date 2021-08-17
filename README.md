@@ -1,49 +1,96 @@
-# mlh-final-project
+# RPS
 
-## Web Server
+![License](https://img.shields.io/github/license/calvh/mlh-final-project)
+![Open
+Issues](https://img.shields.io/github/issues-raw/calvh/mlh-final-project)
+![Closed
+Issues](https://img.shields.io/github/issues-closed-raw/calvh/mlh-final-project)
+![Open
+PRs](https://img.shields.io/github/issues-pr-raw/calvh/mlh-final-project)
+![Closed
+PRs](https://img.shields.io/github/issues-pr-closed-raw/calvh/mlh-final-project)
 
--   [ ] A backend web server that will host the application. This must
-    be written using Python, but you're not limited to Flask.
--   [ ] You're welcome to have a separate front end written in React and
-    treat the backend as an API, but this is not a requirement. We
-    encourage that you don't do this unless you're confident using React
-    or a similar JavaScript framework.
+## About
 
-## Database
+RPS is rock, paper, scissors built with Flask, and MongoDB on the
+backend, jQuery on the frontend, and SocketIO on frontend and backend.
+The app is designed to be run using Docker Compose.
 
--   [ ] This can be any type of database, but bonus points for having it
-    inside of a Docker container. It needs to be running on the same
-    machine, and can't be hosted in the cloud like Firebase.
+Play it at https://rockpaperscissors.duckdns.org/
 
-## Container
+## Description
 
--   [ ] You need at least 1 container so the final project is deployed
-    using Docker.
--   [ ] Bonus points for isolating different components like your web
-    server, database, and NGINX.
+To play anonymously:
 
-## CI/CD
+    1. Click the *Play Anonymously* Button
+    2. Click either *Play against CPU* or *Play against Human*
+    3. Click on your choice of Rock, Paper, or Scissors
+    4. Click the button *Play Again?* to start a new game
 
--   [ ] You must use a CI/CD system like GitHub Actions to automatically
-    deploy your container to AWS.
--   [ ] Bonus points for using CI/CD to run automated tests and linters
-    against your code when you make Pull Requests.
+To play with an account:
 
-## Monitoring
+    1. Login to an existing account or Register a new account
+    2. Click either *Play against CPU* or *Play against Human*
+    3. Click on your choice of Rock, Paper, or Scissors
+    4. Click the button *Play Again?* to start a new game
 
--   [ ] Your project must have a monitoring system to help you ensure
-    it's operating smoothly. This can be one of the systems covered in
-    Week 6 or something else.
+## Deploying on a webserver
 
-## Deployment
+Create `.env` files using the `.env.example` files as a template and set
+the variables accordingly. Most variables have the sensible default
+values but some need to be set explicitly:
 
--   [ ] This must be deployed to AWS using a reverse proxy like NGINX.
--   [ ] Bonus points for hosting it with a domain. You can grab a .tech
-    domain from Domain.com using the following offer codes: Sprint 1:
-    AUG21HACK Sprint 2: MINTCHOCOCHIP Sprint 3: ICECREAMSUNDAE Note: the
-    code changes on Fridays. Sprint 2 code will begin on August 6th.
+    ```
+    # flask.env
+    SECRET_KEY
 
-## Team Members
+    # mongo.env
+    MONGO_INITDB_ROOT_USERNAME
+    MONGO_INITDB_ROOT_PASSWORD
+    MONGO_DB
+
+    # nginx.env
+    CERTBOT_EMAIL
+    ```
+
+If you do not already have the SSL certificates in `/etc/letsencrypt/`,
+the Nginx container will automatically request them for you.
+
+Run `docker-compose up -d` to start the app.
+
+## Testing on localhost
+
+Create `.env` files using the `.env.example` files as a template and set
+the following variables:
+
+    ```
+    # nginx.env
+    USE_LOCAL_CA=1
+    DHPARAM_SIZE=512
+    ```
+
+Here, `DHPARAM_SIZE` is set to a low number to reduce the amount of time
+it takes for the Nginx container to startup. In production, 2048 or
+larger is
+[recommended](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange).
+
+Next, change the following specifications in `docker-compose.yaml`:
+
+    ```
+    nginx:
+        image: jonasal/nginx-certbot:dev
+        volumes:
+            - ./nginx/localhost_conf.d:/etc/nginx/user_conf.d
+    ```
+
+Run `docker-compose up -d` and navigate to `https://localhost` once the
+app has started up. Your browser will warn you of unrecognized
+certificates: this is normal because the test configuration generates
+[self-signed
+certificates](https://github.com/JonasAlfredsson/docker-nginx-certbot/blob/master/docs/advanced_usage.md#local-ca).
+Accept the warning in order to see the app.
+
+## Contributors
 
 -   [HamdiaA](https://github.com/HamdiaA)
 -   [nimra200](https://github.com/nimra200)

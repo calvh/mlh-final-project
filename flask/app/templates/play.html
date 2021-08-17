@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% set active_page = "play" %}
 {% block title %} Play {% endblock %}
+{% block head_css %} <link rel="stylesheet" href="{{ url_for('static', filename='styles/play.css') }}" /> {% endblock %}
 {% block content %}
 
 <div class="container">
@@ -33,19 +34,16 @@
             </div>
         </div>
     </div>
-
-
-    <!-- buttons -->
-    <div>
-        <span class="circle-dot" id="btn-rock">
-            <img src="./static/img/icons8-rock-80.png"></img>
-        </span>
-        <span class="circle-dot" id="btn-paper">
-            <img src="./static/img/icons8-paper-80.png"></img>
-        </span>
-        <span class="circle-dot" id="btn-scissors">
-            <img src="./static/img/icons8-hand-scissors-80.png"></img>
-        </span>
+    <div class="flex-container">
+        <button type="button" class="circle-dot" id="btn-rock">
+            <img style="margin: 5px;" src="./static/img/icons8-rock-80.png"></img>
+        </button>
+        <button type="button" class="circle-dot" id="btn-paper">
+            <img style="margin: 5px;" src="./static/img/icons8-paper-80.png"></img>
+        </button>
+        <button type="button" class="circle-dot" id="btn-scissors">
+            <img style="margin: 5px;" src="./static/img/icons8-hand-scissors-80.png"></img>
+        </button>
     </div>
 
     <!-- game options -->
