@@ -1,0 +1,23 @@
+body {
+  background-color: #f4cc70;
+}
+
+h2 {
+  color: #794518;
+}
+
+#username {
+  margin: 30px 15px;
+}
+
+#username input[type="text"] {
+  border-radius: 5px;
+}
+
+#password input[type="password"] {
+  border-radius: 5px;
+}
+
+#submitLogin {
+  margin-bottom: 15px;
+}

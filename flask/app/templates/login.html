@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
 {% set active_page = "login" %}
+{% block head_css%} <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}"/> {% endblock %}
 {% block title %} Login {% endblock %}
 {% block content %}
 
-<body style="background-color:#f4cc70;"> 
-    <h2 style="color: #794518;">Log In Here!</h2>
+<body> 
+    <h2>Log In Here!</h2>
     <form method="POST" id="login-form">
-        <div id="username" style= "margin: 30px 15px;">
+        <div id="username">
             <label for="username">Username</label>
-            <input type="text"  name="username" style="border-radius: 5px;" required>
+            <input type="text"  name="username" required>
             <br>
         </div>
         <div id="password">
             <label for="password">Password</label>
-            <input type="password"  name="password" style="border-radius: 5px;" required>
+            <input type="password"  name="password" required>
             <br><br>
         </div>
-        <input type="submit" value="Login" style="margin-bottom: 15px;"><br>
+        <input id="submitLogin" type="submit" value="Login"><br>
         Don't have an Account? 
         <a href="/auth/register/">
             Register Here!
