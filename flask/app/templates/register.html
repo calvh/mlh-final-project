@@ -1,20 +1,21 @@
 {% extends 'base.html' %}
 {% set active_page = "register" %}
+{% block head_css %} <link rel="stylesheet" href="{{ url_for('static', filename='styles/register.css') }}"/>{% endblock %}
 {% block title %} Register {% endblock %}
 {% block content %}
-<body style="background-color:#f4cc70;"> 
-    <h2 style="color: #794518;">Create an Account</h2>
+<body> 
+    <h2>Create an Account</h2>
     <form id="register-form" method="POST">
-        <div id="username" style="margin: 30px 15px;">
-            <label class="username">Username</label>
-            <input type="text" id="username" name="username" style="border-radius: 5px;" required>
+        <div id="username">
+            <label for="username">Username</label>
+            <input type="text" name="username" required>
         </div>
         <div id="password">
-            <label class="passW">Password</label>
-            <input type="password" name="password" style="border-radius: 5px;" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" required>
             <br><br>
         </div>
-        <input type="submit" value="Register" style="margin-bottom: 15px;"><br>
+        <input id="registerSubmit" type="submit" value="Register"><br>
         Have an Account? 
         <a href="/auth/login/">
             Sign in Here!

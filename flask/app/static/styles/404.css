@@ -1,0 +1,17 @@
+.homeButton {
+  padding: 20px;
+  margin: 200px;
+  font-size: larger;
+  background-color: #f4cc70;
+}
+
+.hdr {
+  padding: 10px;
+  margin-top: 100px;
+  color: #794518;
+  background-color: #f4cc70;
+}
+
+body {
+  background-color: #de7a22;
+}

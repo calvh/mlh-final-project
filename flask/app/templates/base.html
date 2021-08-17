@@ -4,7 +4,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="./static/styles/index.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     {% block head_css %}{% endblock %}
@@ -14,19 +13,17 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
-{% set navigation_bar = [
-('/', 'index', 'Index'),
-] %}
-
 {% if session["username"] %}
-{% set navigation_bar = navigation_bar + [
+{% set navigation_bar = [
+    ('/play', 'play', 'Play'),
     ('/stats', 'stats', 'My Stats'),
     ('/auth/logout/', 'logout','Logout')
 ] %}
 {% else %}
-{% set navigation_bar = navigation_bar + [
-    ('/auth/register/', 'register','Register'),
-    ('/auth/login/', 'login','Login')
+{% set navigation_bar = [
+    ('/play', 'play', 'Play'),
+    ('/auth/login/', 'login', 'Login'),
+    ('/auth/register/', 'register', 'Register')
 ] %}
 {% endif %}
 {% set active_page = active_page|default('index') %}
