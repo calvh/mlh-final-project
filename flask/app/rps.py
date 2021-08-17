@@ -1,3 +1,6 @@
+from bson.objectid import ObjectId
+from bson.json_util import dumps
+
 from flask import Blueprint, render_template, request, session
 
 from app.db import client
@@ -23,8 +26,22 @@ def stats():
     return render_template("stats.html")
 
 
-@rps.route("/scores", methods=["PUT"])
-def update_scores():
+@rps.route("/scores", methods=["GET", "PUT"])
+def scores():
+    if request.method == "GET":
+        id = session.get("id")
+
+        # handle erroneous requests from anonymous users
+        if id is None:
+            return "UNAUHTORIZED", 401
+
+        db_result = Users.find_one({"_id": ObjectId(id)}, {"gameScore": 1})
+
+        if db_result:
+            return dumps(db_result["gameScore"]), 200
+
+        return "NOT_FOUND", 404
+
     if request.method == "PUT":
 
         username = session.get("username")
