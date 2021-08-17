@@ -269,6 +269,8 @@ $(document).ready(() => {
         game.playerChoice = choice;
         socket.emit("choice", { choice });
         updatePlayerChoice();
+        const result = game.processChoices();
+        incScoresDB(result);
         if (game.status === "WAITING_BOTH") {
           game.status = "WAITING_OPPONENT";
           updateDisplay();
