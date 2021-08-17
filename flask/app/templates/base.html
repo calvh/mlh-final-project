@@ -13,19 +13,17 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
-{% set navigation_bar = [
-('/', 'index', 'Index'),
-] %}
-
 {% if session["username"] %}
-{% set navigation_bar = navigation_bar + [
+{% set navigation_bar = [
+    ('/play', 'play', 'Play'),
     ('/stats', 'stats', 'My Stats'),
     ('/auth/logout/', 'logout','Logout')
 ] %}
 {% else %}
-{% set navigation_bar = navigation_bar + [
-    ('/auth/register/', 'register','Register'),
-    ('/auth/login/', 'login','Login')
+{% set navigation_bar = [
+    ('/play', 'play', 'Play'),
+    ('/auth/login/', 'login', 'Login'),
+    ('/auth/register/', 'register', 'Register')
 ] %}
 {% endif %}
 {% set active_page = active_page|default('index') %}
