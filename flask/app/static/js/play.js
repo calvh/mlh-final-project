@@ -204,7 +204,6 @@ $(document).ready(() => {
     game.leaveRoom();
   });
 
-  // automatically make choice for CPU
   $btnPlayCpu.on("click", (event) => {
     event.preventDefault();
     if (game.status === "CHOOSE_GAME_TYPE") {
@@ -234,9 +233,6 @@ $(document).ready(() => {
 
   const updateDB = (result) => {
     // send PUT request to database to update score for player
-    result = result ? result : "w";
-    console.log(JSON.stringify({ result }));
-    console.log(JSON.stringify(game));
     $.ajax({
       type: "PUT",
       url: "/scores",
@@ -280,6 +276,7 @@ $(document).ready(() => {
       }
 
       if (game.status === "WAITING_PLAYER") {
+        updateOpponentChoice();
         game.processChoices(updateDisplay, updateDB);
       }
 
@@ -331,7 +328,6 @@ $(document).ready(() => {
 
   socket.on("connect", () => {
     console.log("connected");
-    console.log(socket.id);
     game.socketStatus = "CONNECTED";
     updateDisplay();
   });

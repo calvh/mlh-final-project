@@ -49,9 +49,6 @@ def update_scores():
         {"username": username}, {"$inc": {result_map[result]: 1}}
     )
 
-    print(db_result.raw_result)
-    print(db_result.acknowledged)
-
     if db_result.acknowledged:
         return "OK", 200
 
