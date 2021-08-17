@@ -24,6 +24,7 @@ def stats():
     return render_template("stats.html")
 
 
+
 @rps.route("/scores", methods=["PUT"])
 def inc_scores():
     if request.method == "PUT":
