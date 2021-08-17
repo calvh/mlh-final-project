@@ -127,16 +127,14 @@ $(document).ready(() => {
       return choices[Math.floor(Math.random() * choices.length)];
     }
 
-    processChoices() {
+    processChoices(updateDisplayFunction, updateDBFunction) {
       switch (this.status) {
         case "WAITING_PLAYER":
         case "WAITING_OPPONENT":
-          let result;
           if (this.playerChoice && this.opponentChoice) {
             const c1 = this.playerChoice;
             const c2 = this.opponentChoice;
-            updateOpponentChoice();
-            result = Game.calculateResult(c1, c2);
+            const result = Game.calculateResult(c1, c2);
 
             switch (result) {
               case "w":
@@ -153,12 +151,13 @@ $(document).ready(() => {
                 break;
             }
             this.status = "ENDED";
-            updateDisplay();
+            updateDBFunction(result);
+            updateDisplayFunction();
           }
-          return result;
 
         default:
-          // do nothing
+          // game.status is one of:
+          // "CHOOSE_GAME_TYPE", "WAITING_BOTH", "ENDED"
           break;
       }
     }
@@ -233,19 +232,19 @@ $(document).ready(() => {
     }
   });
 
-  const incScoresDB = (result) => {
+  const updateDB = (result) => {
+    // send PUT request to database to update score for player
+    result = result ? result : "w";
+    console.log(JSON.stringify({ result }));
+    console.log(JSON.stringify(game));
     $.ajax({
+      type: "PUT",
       url: "/scores",
       contentType: "application/json",
-      type: "PUT",
       data: JSON.stringify({ result }),
-      success: function (response) {
-        console.log(response);
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    }); //end of AJAX
+    })
+      .done((response) => console.log("DB updated"))
+      .fail((response) => console.log("DB Error: could not update score"));
   };
 
   const handlePlayerButton = (choice) => {
@@ -256,36 +255,39 @@ $(document).ready(() => {
     if (game.gameType === "CPU") {
       game.playerChoice = choice;
       updatePlayerChoice();
-      const result = game.processChoices();
-      incScoresDB(result);
+      game.processChoices(updateDisplay, updateDB);
       if (game.status === "ENDED") {
         $btnPlayAgain.prop("disabled", false);
       }
     }
 
-    // PLAY vs human
+    // human opponent
     if (game.status === "WAITING_BOTH" || game.status === "WAITING_PLAYER") {
-      if (game.room) {
-        game.playerChoice = choice;
-        socket.emit("choice", { choice });
-        updatePlayerChoice();
-        const result = game.processChoices();
-        incScoresDB(result);
-        if (game.status === "WAITING_BOTH") {
-          game.status = "WAITING_OPPONENT";
-          updateDisplay();
-        }
-        game.processChoices();
-        const result = game.processChoices();
-        incScoresDB(result);
-        if (game.status === "ENDED") {
-          $btnPlayAgain.prop("disabled", false);
-        }
-      } else {
+      if (!game.room) {
         console.log("ERROR_NOT_IN_ROOM");
+        return;
+      }
+
+      game.playerChoice = choice;
+      socket.emit("choice", { choice });
+      updatePlayerChoice();
+
+      // opponent hasn't made choice, wait for opponent
+      if (game.status === "WAITING_BOTH") {
+        game.status = "WAITING_OPPONENT";
+        updateDisplay();
+        return;
+      }
+
+      if (game.status === "WAITING_PLAYER") {
+        game.processChoices(updateDisplay, updateDB);
+      }
+
+      if (game.status === "ENDED") {
+        $btnPlayAgain.prop("disabled", false);
       }
     }
-  }; //end of handlePlayerButton()
+  };
 
   $btnRock.on("click", (event) => {
     event.preventDefault();
@@ -312,7 +314,7 @@ $(document).ready(() => {
         message,
       });
     }
-  }); //end of function $btnSendGeneralChat
+  });
 
   $btnSendRoomChat.on("click", (event) => {
     event.preventDefault();
@@ -387,13 +389,22 @@ $(document).ready(() => {
 
   socket.on("choice", (data) => {
     game.opponentChoice = data.choice;
+
+    // player hasn't made choice, wait for player
     if (game.status === "WAITING_BOTH") {
       game.status = "WAITING_PLAYER";
       updateDisplay();
+      return;
     }
-    game.processChoices();
+
+    // player already made choice
+    if (game.status === "WAITING_OPPONENT") {
+      updateOpponentChoice();
+      game.processChoices(updateDisplay, updateDB);
+    }
+
     if (game.status === "ENDED") {
       $btnPlayAgain.prop("disabled", false);
     }
-  }); //end of socket.on("choice")
-}); //END OF DOCUMENT.READY
+  });
+});

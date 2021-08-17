@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, session
-import json
 
 from app.db import client
 
@@ -25,23 +24,35 @@ def stats():
 
 
 @rps.route("/scores", methods=["PUT"])
-def inc_scores():
+def update_scores():
     if request.method == "PUT":
-        result = request.get_json()["result"]
-        username = session["username"]
-        # insert/update in DB
-        if result == "w":
-            Users.update_one(
-                {"username": username}, {"$inc": {"gameScore.wins": 1}}
-            )
-        elif result == "l":
-            Users.update_one(
-                {"username": username}, {"$inc": {"gameScore.losses": 1}}
-            )
-        elif result == "d":
-            Users.update_one(
-                {"username": username}, {"$inc": {"gameScore.draws": 1}}
-            )
-    return json.dumps(
-        {"status": "OK", "user is ": username, "\ngame-score": result}
+
+        username = session.get("username")
+
+        # handle erroneous requests from anonymous users
+        if username is None:
+            return "BAD_REQUEST", 400
+
+        result = request.get_json().get("result")
+
+        # handle invalid result or no result
+        if result is None or result not in {"w", "l", "d"}:
+            return "BAD_REQUEST", 400
+
+        result_map = {
+            "w": "gameScore.wins",
+            "l": "gameScore.losses",
+            "d": "gameScore.draws",
+        }
+
+    db_result = Users.update_one(
+        {"username": username}, {"$inc": {result_map[result]: 1}}
     )
+
+    print(db_result.raw_result)
+    print(db_result.acknowledged)
+
+    if db_result.acknowledged:
+        return "OK", 200
+
+    return "DB_ERROR", 500
