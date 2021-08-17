@@ -1,8 +1,7 @@
 from bson.objectid import ObjectId
 from bson.json_util import dumps, loads
-import json
 
-from flask import Blueprint, render_template, request, session, jsonify
+from flask import Blueprint, render_template, request, session
 
 from app.db import client
 
