@@ -44,7 +44,6 @@ def scores():
             return render_template("stats.html", json_db=json_db)
             # return dumps(db_result["gameScore"]), 200
 
-
         return "NOT_FOUND", 404
 
     if request.method == "PUT":
