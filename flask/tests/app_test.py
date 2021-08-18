@@ -1,4 +1,3 @@
-from pathlib import Path
 import pytest
 from app import app
 
@@ -32,3 +31,4 @@ def test_scores(client):
 def test_404(client):
     response = client.get("/oops/", content_type="html/text")
     assert response.status_code == 404
+
