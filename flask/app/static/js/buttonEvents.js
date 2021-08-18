@@ -7,6 +7,7 @@ const handlePlayerButton = (choice) => {
   if (game.gameType === "CPU") {
     game.playerChoice = choice;
     updatePlayerChoice(game);
+    updateOpponentChoice(game);
     game.processChoices(updateDisplay, updateDB);
     if (game.status === "ENDED") {
       $btnPlayAgain.prop("disabled", false);
