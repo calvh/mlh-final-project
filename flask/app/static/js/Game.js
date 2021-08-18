@@ -115,7 +115,7 @@ class Game {
               break;
           }
           this.status = "ENDED";
-        this.lastResult = result;
+          this.lastResult = result;
           updateDBFunction(result);
           updateDisplayFunction(this);
         }
