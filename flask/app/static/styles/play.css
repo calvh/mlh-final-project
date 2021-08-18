@@ -6,17 +6,29 @@ h1 {
   margin: 25px 15px;
 }
 
-.flex-container {
-  display: flex;
-  justify-content: space-evenly;
-  margin: 50px 75px;
-}
-
-#choice-player {
-  border-radius: 50%;
-  height: 300px;
-  width: 300px;
-}
 body {
   background-color: #de7a22;
+}
+.card {
+  width: 18rem;
+}
+
+.circle-dot {
+  margin: 5px;
+}
+
+#current-room {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12ch;
+}
+
+.position-fixed {
+  z-index: 11;
+  bottom: 0;
+  right: 0;
+}
+
+.overflow-auto {
+  max-height: 50vh;
 }
