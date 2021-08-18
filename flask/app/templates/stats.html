@@ -9,9 +9,9 @@
         <img src="./static/img/female.png" alt="Avatar1" style="border-radius:50%; height: 300px; width: 300px;">
         <h2>You</h2>
         <div style="text-align: left; margin-left: 20%;">
-          <p>Wins: <span id="my-wins"></span></p>
-          <p>Losses: <span id="my-losses"></span></p>
-          <p>Ties: <span id="my-draws"></span></p>
+          <p>Wins: <span id="player-wins"></span></p>
+          <p>Losses: <span id="player-losses"></span></p>
+          <p>Ties: <span id="plater-draws"></span></p>
         </div>
     </div>
             
@@ -27,8 +27,8 @@
   </section>
   <script>
     var json_my_data = JSON.parse('{{ json_db | tojson | safe }}');
-    document.getElementById('my-wins').innerHTML = json_my_data.wins;
-    document.getElementById('my-losses').innerHTML = json_my_data.losses;
-    document.getElementById('my-draws').innerHTML = json_my_data.draws;
+    document.getElementById('player-wins').innerHTML = json_my_data.wins;
+    document.getElementById('player-losses').innerHTML = json_my_data.losses;
+    document.getElementById('player-draws').innerHTML = json_my_data.draws;
   </script>
 {% endblock %}
