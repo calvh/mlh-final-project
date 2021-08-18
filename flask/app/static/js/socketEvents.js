@@ -49,7 +49,7 @@ socket.on("joined room", (data) => {
 
 // messages sent by unnamed events
 socket.on("message", (data) => {
-  $chatMessages.append(
+  updateChat(
     $("<li>")
       .addClass("list-group-item")
       .text(`${data.username}: ${data.message}`)
@@ -57,7 +57,7 @@ socket.on("message", (data) => {
 });
 
 socket.on("room chat", (data) => {
-  $chatMessages.append(
+  updateChat(
     $("<li>")
       .addClass("list-group-item-secondary")
       .text(`${data.username}: ${data.message}`)
@@ -65,13 +65,13 @@ socket.on("room chat", (data) => {
 });
 
 socket.on("general notification", (notification) => {
-  $chatMessages.append(
+  updateChat(
     $("<li>").addClass("list-group-item-info").text(`${notification}`)
   );
 });
 
 socket.on("room notification", (notification) => {
-  $chatMessages.append(
+  updateChat(
     $("<li>").addClass("list-group-item-danger").text(`${notification}`)
   );
 });
