@@ -44,7 +44,7 @@ def register():
             error = "Password must be at least 8 characters"
         elif not re.search(r".*[A-Z]+.*[a-z]+.*[\d]+.*", password):
             error = "Password needs 1 uppercase, 1 lowercase, and 1 number"
-        elif re.search(r".*[#]+.*", username):
+        elif not re.search(r".*?![#]+.*", username):
             error = "Username cannot contain hashes (#)"
 
         if error is None:
