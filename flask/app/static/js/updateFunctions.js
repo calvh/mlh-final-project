@@ -63,3 +63,10 @@ const updateDB = (result) => {
     .done((response) => console.log("DB updated"))
     .fail((response) => console.log("DB Error: could not update score"));
 };
+
+const updateChat = (listItem) => {
+  if ($("#chat-messages li").length > 100) {
+    $chatMessages.find(":first-child").remove();
+  }
+  $chatMessages.append(listItem);
+};
