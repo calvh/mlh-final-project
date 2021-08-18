@@ -1,0 +1,37 @@
+h1 {
+  background-color: #f4cc70;
+  color: #794518;
+  padding: 10px;
+  border-radius: 15px;
+  margin: 25px 15px;
+}
+
+body {
+  background-color: #de7a22;
+}
+.card {
+  width: 18rem;
+}
+
+.circle-dot {
+  margin: 5px;
+}
+
+#current-room {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12ch;
+}
+
+#chatroom-container {
+  z-index: 11;
+  bottom: 0;
+  right: 0;
+}
+
+#chat-messages-container {
+  max-height: 50vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
+}

@@ -13,7 +13,7 @@
     <!-- avatars -->
     <div class="row justify-content-around">
         <div class="col-5 d-flex justify-content-center">
-            <div class="card bg-transparent border-0" style="width: 18rem;">
+            <div class="card bg-transparent border-0">
                 <img id="choice-player" src="./static/img/female.png" class="card-img-top" alt="player">
                 <div class="card-body">
                     <h5 id="player-name" class="card-title">You</h5>
@@ -26,7 +26,7 @@
         </div>
 
         <div class="col-5 d-flex justify-content-center">
-            <div class="card bg-transparent border-0" style="width: 18rem;">
+            <div class="card bg-transparent border-0">
                 <img id="choice-opponent" src="./static/img/male.png" class="card-img-top" alt="player">
                 <div class="card-body">
                     <h5 id="opponent-name" class="card-title">Opponent</h5>
@@ -36,13 +36,13 @@
     </div>
     <div class="flex-container">
         <button type="button" class="circle-dot" id="btn-rock">
-            <img style="margin: 5px;" src="./static/img/icons8-rock-80.png"></img>
+            <img src="./static/img/icons8-rock-80.png"></img>
         </button>
         <button type="button" class="circle-dot" id="btn-paper">
-            <img style="margin: 5px;" src="./static/img/icons8-paper-80.png"></img>
+            <img  src="./static/img/icons8-paper-80.png"></img>
         </button>
         <button type="button" class="circle-dot" id="btn-scissors">
-            <img style="margin: 5px;" src="./static/img/icons8-hand-scissors-80.png"></img>
+            <img src="./static/img/icons8-hand-scissors-80.png"></img>
         </button>
     </div>
 
@@ -62,7 +62,7 @@
     </div>
 
     <!-- chatrooom -->
-    <div class="position-fixed mb-5" style="z-index: 11; bottom: 0; right:0;">
+    <div id="chatroom-container" class="position-fixed mb-5">
         <div id="chatroom" class="toast hide" role="alert">
         <div class="toast-header">
           <strong class="me-auto">Messages</strong>
@@ -70,7 +70,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
         </div>
         <div class="toast-body">
-                <div style="max-height:50vh" class="overflow-auto">
+                <div id="chat-messages-container" class="overflow-auto">
                     <!-- chat messages -->
                     <ul id="chat-messages" class="list-group"></ul>
                 </div>
