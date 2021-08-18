@@ -1,14 +1,14 @@
 from flask import request, session
 from flask_socketio import send, emit, rooms
 
-from app.socketio_bp.main import names
+from app.socketio_bp.main import clients
 from app.socketio_init import socketio
 
 
 @socketio.on("general chat")
 def handle_general_chat(data):
     sid = request.sid
-    username = session.get("username", names[sid])
+    username = session.get("username", clients[sid])
     data["username"] = username
     send(data, broadcast=True)
 
@@ -19,6 +19,6 @@ def handle_room_chat(data):
     # check if client is in room
     if data["room"] in rooms():
         sid = request.sid
-        username = session.get("username", names[sid])
+        username = session.get("username", clients[sid])
         data["username"] = username
         emit("room chat", data, to=data["room"])
