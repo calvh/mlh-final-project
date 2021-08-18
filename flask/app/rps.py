@@ -101,4 +101,3 @@ def scores():
         return "OK", 200
 
     return "DB_ERROR", 500
-
