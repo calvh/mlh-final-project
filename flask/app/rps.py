@@ -1,5 +1,5 @@
 from bson.objectid import ObjectId
-from bson.json_util import dumps, loads
+from bson.json_util import dumps
 
 from flask import Blueprint, render_template, request, session
 
@@ -21,23 +21,28 @@ def play():
     return render_template("play.html")
 
 
-@rps.route("/stats", methods=["GET"])
+@rps.route("/stats")
 def stats():
-    if request.method == "GET":
-        id = session.get("id")
 
-        # handle erroneous requests from anonymous users
-        if id is None:
-            return "UNAUHTORIZED", 401
+    id = session.get("id")
 
-        db_result = Users.find_one({"_id": ObjectId(id)}, {"gameScore": 1})
+    # handle erroneous requests from anonymous users
+    if id is None:
+        return "UNAUHTORIZED", 401
 
-        if db_result:
-            json_db = loads(dumps(db_result["gameScore"]))
-            return render_template("stats.html", json_db=json_db)
+    db_result = Users.find_one({"_id": ObjectId(id)}, {"gameScore": 1})
 
-        return "NOT_FOUND", 404
-    return render_template("stats.html")
+    if db_result:
+        scores = db_result["gameScore"]
+
+        return render_template(
+            "stats.html",
+            wins=scores["wins"],
+            losses=scores["losses"],
+            draws=scores["draws"],
+        )
+
+    return "NOT_FOUND", 404
 
 
 @rps.route("/scores", methods=["GET", "PUT"])
