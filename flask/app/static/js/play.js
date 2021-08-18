@@ -316,14 +316,15 @@ $(document).ready(() => {
     }
   });
 
-  socket.on("connect", () => {
+  socket.on("connected", (username) => {
     console.log("connected");
+
+    game.playerName = username;
 
     $statusBar
       .removeClass("bg-danger")
       .removeClass("bg-secondary")
       .addClass("bg-success");
-    game.playerName = socket.id;
 
     game.socketStatus = "CONNECTED";
     updateDisplay();
