@@ -6,8 +6,6 @@ from flask import (
     render_template,
     request,
     session,
-    redirect,
-    url_for,
 )
 
 from app.db import client
@@ -20,17 +18,17 @@ Users = db.users
 
 @rps.route("/")
 def index():
-
-    # redirect logged in users
-    if "username" in session:
-        return redirect(url_for("rps.play"))
-
     return render_template("index.html")
 
 
 @rps.route("/play")
 def play():
     return render_template("play.html")
+
+
+@rps.route("/play/cpu")
+def play_cpu():
+    return render_template("cpu.html")
 
 
 @rps.route("/stats")

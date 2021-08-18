@@ -13,15 +13,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
-{% if session["username"] %}
 {% set navigation_bar = [
-    ('/play', 'play', 'Play'),
+    ('/play/cpu', 'playCPU', 'VS CPU'),
+    ('/play', 'play', 'VS Player')
+]
+%}
+{% if session["username"] %}
+{% set navigation_bar = navigation_bar + [
     ('/stats', 'stats', 'My Stats'),
     ('/auth/logout/', 'logout','Logout')
 ] %}
 {% else %}
-{% set navigation_bar = [
-    ('/play', 'play', 'Play'),
+{% set navigation_bar = navigation_bar +[
     ('/auth/login/', 'login', 'Login'),
     ('/auth/register/', 'register', 'Register')
 ] %}
