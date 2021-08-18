@@ -2,10 +2,11 @@
 
 class Game {
   constructor() {
-    this.status = "CHOOSE_GAME_TYPE";
+    this.status = "START";
     this.socketStatus = "DISCONNECTED";
     this.playerName = null;
     this.lastResult = null;
+    this.gameNumber = 1;
     this.gameType = null;
     this.room = null;
     this.opponentName = null;
@@ -35,31 +36,16 @@ class Game {
     return this._draws;
   }
 
-  allScores() {
-    const game_score = {
-      wins: this.getWins,
-      losses: this.getLosses,
-      draws: this.getDraws,
-    };
-    return game_score;
-  }
-
-  leaveRoom(socket) {
-    if (this.room) {
-      // trigger server to initiate leave room
-      socket.emit("leave", { room: this.room });
-    }
-  }
-
-  reset(socket) {
-    if (this.status === "ENDED") {
-      this.leaveRoom(socket);
-      this.status = "CHOOSE_GAME_TYPE";
+  reset() {
+    if (this.status === "ENDED" || this.status === "OPPONENT_LEFT") {
+      this.status = "START";
+      this.gameNumber = 1;
       this.gameType = null;
       this.room = null;
       this.opponentName = null;
       this.opponentChoice = null;
       this.playerChoice = null;
+      this.lastResult = null;
     }
   }
 
@@ -91,7 +77,7 @@ class Game {
   // CPU game: player makes a choice
   // Human game: player makes a choice when their opponent already made choice
   // Human game: opponent makes a choice (triggered through socket event), when the player has already made their choice
-  processChoices(updateDisplayFunction, updateDBFunction) {
+  processChoices() {
     switch (this.status) {
       case "WAITING_PLAYER":
       case "WAITING_OPPONENT":
@@ -116,13 +102,13 @@ class Game {
           }
           this.status = "ENDED";
           this.lastResult = result;
-          updateDBFunction(result);
-          updateDisplayFunction(this);
+          this.playerChoice = null;
+          this.opponentChoice = null;
         }
 
       default:
         // when game.status is one of:
-        // "CHOOSE_GAME_TYPE", "WAITING_BOTH", "ENDED"
+        // "START", "WAITING_BOTH", "ENDED", "OPPONENT_LEFT"
         // do nothing
         break;
     }

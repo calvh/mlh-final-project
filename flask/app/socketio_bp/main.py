@@ -61,22 +61,23 @@ def handle_disconnect():
 
     for room in rooms():
         emit("room notification", f"{username} is offline", to=room)
+        emit("opponent left", to=room)
 
 
-@socketio.on("leave")
+@socketio.on("leave room")
 def on_leave(data):
 
     sid = request.sid
 
     username = session.get("username", clients[sid])
 
-    room = data["room"]
+    for room in rooms():
+        leave_room(room)
 
-    leave_room(room)
+        # notify user of successful exit
+        emit("user notification", f"Left {room}")
+        emit("left room")
 
-    # notify user of successful exit
-    emit("user notification", f"Left {room}")
-    emit("status change", {"status": "joined the room"})
-
-    # notify room that a user has left
-    emit("room notification", f"{username} left the rooom", to=room)
+        # notify room that a user has left
+        emit("room notification", f"{username} left the room", to=room)
+        emit("opponent left", to=room)

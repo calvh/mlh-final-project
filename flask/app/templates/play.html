@@ -8,7 +8,8 @@
 
     <!-- status bars -->
     <h1 id="game-stats">Wins: 0, Losses: 0, Draws: 0</h1>
-    <h1 id="game-status">Choose Game Type</h1>
+    <h1 id="game-number">Game #1</h1>
+    <h1 id="game-status">Click on Queue to find an opponent!</h1>
 
     <!-- avatars -->
     <div class="row justify-content-around">
@@ -47,16 +48,14 @@
     </div>
 
     <!-- game options -->
-    <div class="my-2">
-        <button type="button" class="btn btn-warning" id="btn-play-cpu">Play against CPU</button>
-        <button type="button" class="btn btn-warning" id="btn-queue">Play against Human</button>
-        <button type="button" class="btn btn-warning" id="btn-play-again" disabled>Play Again?</button>
+    <div class="container my-2 w-50">
+        <button type="button" class="btn btn-warning" id="btn-new-game">Queue</button>
     </div>
 
     <!-- status bar -->
     <div id="status-bar" class="fixed-bottom bg-gradient bg-danger w-auto py-1 px-3 d-flex justify-content-between align-items-center">
-            <span id="socket-status" class="text-white fw-bold align-middle">DISCONNECTED</span>
-            <span id="current-room" class="text-white fw-bold align-middle" style="overflow: hidden; text-overflow: ellipsis; max-width: 12ch;">ROOM: null</span>
+        <span id="socket-status" class="text-white fw-bold align-middle">DISCONNECTED</span>
+        <span id="current-room" class="text-white fw-bold align-middle" style="overflow: hidden; text-overflow: ellipsis; max-width: 12ch;">ROOM: null</span>
         <button id="toggle-chat" type="button" class="btn btn-primary">Chat &uarr;</button>
 
     </div>
@@ -64,12 +63,14 @@
     <!-- chatrooom -->
     <div id="chatroom-container" class="position-fixed mb-5">
         <div id="chatroom" class="toast hide" role="alert">
-        <div class="toast-header">
-          <strong class="me-auto">Messages</strong>
-          <small></small>
-          <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-        </div>
-        <div class="toast-body">
+            <div class="toast-header">
+                <div class="me-auto form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="check-room-chat" disabled>
+                    <label class="form-check-label" for="check-room-chat"><strong>Whisper Opponent</strong></label>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
                 <div id="chat-messages-container" class="overflow-auto">
                     <!-- chat messages -->
                     <ul id="chat-messages" class="list-group"></ul>
@@ -77,17 +78,17 @@
 
                 <div class="input-group mb-3">
                     <input id="input-chat" type="text" class="form-control" placeholder="Message">
-                    <button id="btn-send-room-chat" class="btn btn-outline-secondary" type="button">Room</button>
-                    <button id="btn-send-general-chat" class="btn btn-outline-secondary" type="button">All</button>
+                    <button id="btn-send-chat" class="btn btn-outline-secondary" type="button">Send</button>
                 </div>
+            </div>
         </div>
-      </div>
     </div>
 
-<script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
-<script src="./static/js/Game.js"></script>
-<script src="./static/js/init.js"></script>
-<script src="./static/js/updateFunctions.js"></script>
-<script src="./static/js/socketEvents.js"></script>
-<script src="./static/js/buttonEvents.js"></script>
-{% endblock %}
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+    <script src="./static/js/Game.js"></script>
+    <script src="./static/js/init.js"></script>
+    <script src="./static/js/updateFunctions.js"></script>
+    <script src="./static/js/socketGameEvents.js"></script>
+    <script src="./static/js/socketChatEvents.js"></script>
+    <script src="./static/js/buttonEvents.js"></script>
+    {% endblock %}
