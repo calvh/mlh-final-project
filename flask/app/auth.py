@@ -36,6 +36,10 @@ def register():
             error = "Password is required."
         elif Users.find_one({"username": username}) is not None:
             error = f"User {username} is already registered."
+        elif len(username) < 3:
+            error = "Username must be at least 3 characters"
+        elif len(password) < 8:
+            error = "Password must be at least 8 characters"
 
         if error is None:
             # TODO add error handling for failed insert
