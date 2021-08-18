@@ -1,7 +1,14 @@
 from bson.objectid import ObjectId
 from bson.json_util import dumps
 
-from flask import Blueprint, render_template, request, session
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    session,
+    redirect,
+    url_for,
+)
 
 from app.db import client
 
@@ -13,6 +20,11 @@ Users = db.users
 
 @rps.route("/")
 def index():
+
+    # redirect logged in users
+    if "username" in session:
+        return redirect(url_for("rps.play"))
+
     return render_template("index.html")
 
 

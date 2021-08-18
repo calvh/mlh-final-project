@@ -20,6 +20,11 @@ Users = db.users
 
 @auth.route("/register/", methods=("GET", "POST"))
 def register():
+
+    # redirect logged in users
+    if "username" in session:
+        return redirect(url_for("rps.play"))
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -49,6 +54,11 @@ def register():
 
 @auth.route("/login/", methods=("GET", "POST"))
 def login():
+
+    # redirect logged in users
+    if "username" in session:
+        return redirect(url_for("rps.play"))
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -68,9 +78,6 @@ def login():
             return redirect(url_for("rps.index"))
 
         flash(error)
-
-    elif "username" in session:
-        return redirect(url_for("rps.game"))
 
     return render_template("login.html")
 
