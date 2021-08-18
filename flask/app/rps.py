@@ -28,6 +28,11 @@ def play():
     return render_template("play.html")
 
 
+@rps.route("/play/cpu")
+def play():
+    return render_template("cpu.html")
+
+
 @rps.route("/stats")
 def stats():
 
@@ -97,7 +102,3 @@ def scores():
 
     return "DB_ERROR", 500
 
-
-@rps.route("/choose")
-def choose_game():
-    return render_template("choose.html")
