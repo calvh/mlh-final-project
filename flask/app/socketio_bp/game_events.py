@@ -1,10 +1,11 @@
 import uuid
-from flask import request, session
-from flask_socketio import send, emit, rooms, join_room, leave_room
+from flask import request
+from flask_socketio import emit, rooms, join_room
 
-from app.socketio_bp.main import clients, names, queue
+from app.socketio_bp.main import clients, queue
 
 from app.socketio_init import socketio
+
 
 # queue/join room
 @socketio.on("queue")
