@@ -20,11 +20,6 @@ Users = db.users
 
 @rps.route("/")
 def index():
-
-    # redirect logged in users
-    if "username" in session:
-        return redirect(url_for("rps.play"))
-
     return render_template("index.html")
 
 
@@ -101,3 +96,8 @@ def scores():
         return "OK", 200
 
     return "DB_ERROR", 500
+
+
+@rps.route("/choose")
+def choose_game():
+    return render_template("choose.html")

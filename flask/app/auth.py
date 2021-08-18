@@ -45,7 +45,7 @@ def register():
             }
             Users.insert_one(user).inserted_id
             flash("Register successful, please login.")
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("rps.choose_game"))
 
         flash(error)
 
@@ -75,7 +75,7 @@ def login():
             session.clear()
             session["username"] = user["username"]
             session["id"] = str(user["_id"])
-            return redirect(url_for("rps.index"))
+            return redirect(url_for("rps.choose_game"))
 
         flash(error)
 
