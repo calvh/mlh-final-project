@@ -5,6 +5,7 @@ class Game {
     this.status = "CHOOSE_GAME_TYPE";
     this.socketStatus = "DISCONNECTED";
     this.playerName = null;
+    this.lastResult = null;
     this.gameType = null;
     this.room = null;
     this.opponentName = null;
@@ -114,6 +115,7 @@ class Game {
               break;
           }
           this.status = "ENDED";
+          this.lastResult = result;
           updateDBFunction(result);
           updateDisplayFunction(this);
         }
