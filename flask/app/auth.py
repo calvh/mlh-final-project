@@ -1,10 +1,10 @@
 from flask import (
     Blueprint,
     flash,
-    redirect,
     render_template,
     request,
     session,
+    redirect,
     url_for,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -23,7 +23,7 @@ def register():
 
     # redirect logged in users
     if "username" in session:
-        return redirect(url_for("rps.play"))
+        return redirect(url_for("index"))
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -45,7 +45,7 @@ def register():
             }
             Users.insert_one(user).inserted_id
             flash("Register successful, please login.")
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("index"))
 
         flash(error)
 
