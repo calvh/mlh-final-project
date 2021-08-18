@@ -1,59 +1,88 @@
 "use strict";
 
 $(document).ready(() => {
+  // initialize bootstrap toasts
+  const toastElList = [].slice.call(document.querySelectorAll(".toast"));
+  const toastList = toastElList.map(function (toastEl) {
+    return new bootstrap.Toast(toastEl);
+  });
+
   const socket = io();
 
   const $gameStatus = $("#game-status");
+  const $statusBar = $("#status-bar");
   const $stats = $("#game-stats");
-  const $gameType = $("#game-type");
   const $choicePlayer = $("#choice-player");
   const $choiceOpponent = $("#choice-opponent");
-  const $socketId = $("#socket-id");
   const $socketStatus = $("#socket-status");
   const $currentRoom = $("#current-room");
-  const $opponent = $("#opponent");
-  const $generalChatMessages = $("#general-chat-messages");
-  const $roomChatMessages = $("#room-chat-messages");
-  const $inputGeneralChat = $("#input-general-chat");
-  const $inputRoomChat = $("#input-room-chat");
+  const $playerName = $("#player-name");
+  const $opponentName = $("#opponent-name");
+
+  const $chatroom = $("#chatroom");
+  const $toggleChat = $("#toggle-chat");
+  const $chatMessages = $("#chat-messages");
+  const $inputChat = $("#input-chat");
 
   const $btnRock = $("#btn-rock");
   const $btnPaper = $("#btn-paper");
   const $btnScissors = $("#btn-scissors");
   const $btnPlayAgain = $("#btn-play-again");
   const $btnPlayCpu = $("#btn-play-cpu");
-  const $btnLeaveRoom = $("#btn-leave-room");
   const $btnQueue = $("#btn-queue");
   const $btnSendGeneralChat = $("#btn-send-general-chat");
   const $btnSendRoomChat = $("#btn-send-room-chat");
 
-  const imgMale = `<img src="./static/img/male.png" style="border-radius:50%; height: 300px; width: 300px;"></img>`;
-  const imgFemale = `<img src="./static/img/female.png" style="border-radius:50%; height: 300px; width: 300px;"></img>`;
-  const imgRock = `<img src="./static/img/icons8-rock-80.png"></img>`;
-  const imgPaper = `<img src="./static/img/icons8-paper-80.png"></img>`;
-  const imgScissors = `<img src="./static/img/icons8-hand-scissors-80.png"></img>`;
-  const imgQuestion = `<img src="./static/img/icons8-question-mark-80.png"></img>`;
   const images = {
-    r: imgRock,
-    p: imgPaper,
-    s: imgScissors,
-    q: imgQuestion,
-    male: imgMale,
-    female: imgFemale,
+    r: "./static/img/icons8-rock-80.png",
+    p: "./static/img/icons8-paper-80.png",
+    s: "./static/img/icons8-hand-scissors-80.png",
+    q: "./static/img/icons8-question-mark-80.png",
+    male: "./static/img/male.png",
+    female: "./static/img/female.png",
   };
 
   class Game {
     constructor() {
       this.status = "CHOOSE_GAME_TYPE";
       this.socketStatus = "DISCONNECTED";
+      this.playerName = null;
       this.gameType = null;
       this.room = null;
-      this.opponent = null;
+      this.opponentName = null;
       this.opponentChoice = null;
       this.playerChoice = null;
       this.wins = 0;
       this.losses = 0;
       this.draws = 0;
+    }
+
+    set setWins(newWin) {
+      this._wins = newWin;
+    }
+    set setLosses(newLoss) {
+      this._losses = newLoss;
+    }
+    set setDraws(newDraw) {
+      this._draws = newDraw;
+    }
+    get getWins() {
+      return this._wins;
+    }
+    get getLosses() {
+      return this._losses;
+    }
+    get getDraws() {
+      return this._draws;
+    }
+
+    allScores() {
+      const game_score = {
+        wins: this.getWins,
+        losses: this.getLosses,
+        draws: this.getDraws,
+      };
+      return game_score;
     }
 
     leaveRoom(socket) {
@@ -69,7 +98,7 @@ $(document).ready(() => {
         this.status = "CHOOSE_GAME_TYPE";
         this.gameType = null;
         this.room = null;
-        this.opponent = null;
+        this.opponentName = null;
         this.opponentChoice = null;
         this.playerChoice = null;
       }
@@ -99,14 +128,13 @@ $(document).ready(() => {
       return choices[Math.floor(Math.random() * choices.length)];
     }
 
-    processChoices() {
+    processChoices(updateDisplayFunction, updateDBFunction) {
       switch (this.status) {
         case "WAITING_PLAYER":
         case "WAITING_OPPONENT":
           if (this.playerChoice && this.opponentChoice) {
             const c1 = this.playerChoice;
             const c2 = this.opponentChoice;
-            updateOpponentChoice();
             const result = Game.calculateResult(c1, c2);
 
             switch (result) {
@@ -121,21 +149,20 @@ $(document).ready(() => {
                 break;
               default:
                 // error
-                console.log(result);
                 break;
             }
-
             this.status = "ENDED";
-            updateDisplay();
+            updateDBFunction(result);
+            updateDisplayFunction();
           }
-          break;
 
         default:
-          // do nothing
+          // game.status is one of:
+          // "CHOOSE_GAME_TYPE", "WAITING_BOTH", "ENDED"
           break;
       }
     }
-  }
+  } //END OF CLASS GAME
 
   const game = new Game();
 
@@ -144,19 +171,19 @@ $(document).ready(() => {
   });
 
   const updatePlayerChoice = () => {
-    $choicePlayer.html(images[game.playerChoice]);
+    $choicePlayer.attr("src", images[game.playerChoice]);
   };
 
   const updateOpponentChoice = () => {
-    $choiceOpponent.html(images[game.opponentChoice]);
+    $choiceOpponent.attr("src", images[game.opponentChoice]);
   };
 
   const updateDisplay = () => {
     $gameStatus.text(game.status);
     $socketStatus.text(game.socketStatus);
-    $gameType.text(`Game type: ${game.gameType}`);
-    $currentRoom.text(game.room);
-    $opponent.text(game.opponent);
+    $currentRoom.text(`ROOM: ${game.room}`);
+    $playerName.text(`${game.playerName} (you)`);
+    $opponentName.text(`${game.opponentName}`);
     $stats.text(
       `Wins: ${game.wins}, Losses: ${game.losses}, Draws: ${game.draws}`
     );
@@ -169,23 +196,18 @@ $(document).ready(() => {
     $btnPlayAgain.prop("disabled", true);
     game.reset(socket);
     updateDisplay();
-    $choicePlayer.html(images["q"]);
-    $choiceOpponent.html(images["q"]);
+    $choicePlayer.attr("src", images["q"]);
+    $choiceOpponent.attr("src", images["q"]);
   });
 
-  $btnLeaveRoom.on("click", (event) => {
-    event.preventDefault();
-    game.leaveRoom();
-  });
-
-  // automatically make choice for CPU
   $btnPlayCpu.on("click", (event) => {
     event.preventDefault();
     if (game.status === "CHOOSE_GAME_TYPE") {
       $btnPlayCpu.prop("disabled", true);
       $btnQueue.prop("disabled", true);
-      $choicePlayer.html(images["q"]);
-      $choiceOpponent.html(images["q"]);
+      $choicePlayer.attr("src", images["q"]);
+      $choiceOpponent.attr("src", images["q"]);
+      game.opponentName = "CPU";
       game.gameType = "CPU";
       game.opponentChoice = Game.cpuChoose();
       game.status = "WAITING_PLAYER";
@@ -198,13 +220,25 @@ $(document).ready(() => {
     if (game.status === "CHOOSE_GAME_TYPE") {
       $btnPlayCpu.prop("disabled", true);
       $btnQueue.prop("disabled", true);
-      $choicePlayer.html(images["q"]);
-      $choiceOpponent.html(images["q"]);
+      $choicePlayer.attr("src", images["q"]);
+      $choiceOpponent.attr("src", images["q"]);
       socket.emit("queue");
       game.status = "QUEUE";
       updateDisplay();
     }
   });
+
+  const updateDB = (result) => {
+    // send PUT request to database to update score for player
+    $.ajax({
+      type: "PUT",
+      url: "/scores",
+      contentType: "application/json",
+      data: JSON.stringify({ result }),
+    })
+      .done((response) => console.log("DB updated"))
+      .fail((response) => console.log("DB Error: could not update score"));
+  };
 
   const handlePlayerButton = (choice) => {
     if (game.playerChoice) {
@@ -214,32 +248,41 @@ $(document).ready(() => {
     if (game.gameType === "CPU") {
       game.playerChoice = choice;
       updatePlayerChoice();
-      game.processChoices();
+      game.processChoices(updateDisplay, updateDB);
       if (game.status === "ENDED") {
         $btnPlayAgain.prop("disabled", false);
       }
     }
 
-    // vs human
+    // human opponent
     if (game.status === "WAITING_BOTH" || game.status === "WAITING_PLAYER") {
-      if (game.room) {
-        game.playerChoice = choice;
-        socket.emit("choice", { choice });
-        updatePlayerChoice();
-
-        if (game.status === "WAITING_BOTH") {
-          game.status = "WAITING_OPPONENT";
-          updateDisplay();
-        }
-        game.processChoices();
-        if (game.status === "ENDED") {
-          $btnPlayAgain.prop("disabled", false);
-        }
-      } else {
+      if (!game.room) {
         console.log("ERROR_NOT_IN_ROOM");
+        return;
+      }
+
+      game.playerChoice = choice;
+      socket.emit("choice", { choice });
+      updatePlayerChoice();
+
+      // opponent hasn't made choice, wait for opponent
+      if (game.status === "WAITING_BOTH") {
+        game.status = "WAITING_OPPONENT";
+        updateDisplay();
+        return;
+      }
+
+      if (game.status === "WAITING_PLAYER") {
+        updateOpponentChoice();
+        game.processChoices(updateDisplay, updateDB);
+      }
+
+      if (game.status === "ENDED") {
+        $btnPlayAgain.prop("disabled", false);
       }
     }
   };
+
   $btnRock.on("click", (event) => {
     event.preventDefault();
     handlePlayerButton("r");
@@ -258,7 +301,7 @@ $(document).ready(() => {
   $btnSendGeneralChat.on("click", (event) => {
     event.preventDefault();
 
-    const message = $inputGeneralChat.val().trim();
+    const message = $inputChat.val().trim();
 
     if (message) {
       socket.emit("general chat", {
@@ -270,7 +313,7 @@ $(document).ready(() => {
   $btnSendRoomChat.on("click", (event) => {
     event.preventDefault();
 
-    const message = $inputRoomChat.val().trim();
+    const message = $inputChat.val().trim();
 
     if (game.room && message) {
       socket.emit("room chat", {
@@ -280,9 +323,16 @@ $(document).ready(() => {
     }
   });
 
-  socket.on("connect", () => {
+  socket.on("connected", (username) => {
     console.log("connected");
-    console.log(socket.id);
+
+    game.playerName = username;
+
+    $statusBar
+      .removeClass("bg-danger")
+      .removeClass("bg-secondary")
+      .addClass("bg-success");
+
     game.socketStatus = "CONNECTED";
     updateDisplay();
   });
@@ -293,6 +343,7 @@ $(document).ready(() => {
     $btnPlayCpu.prop("disabled", true);
     $btnQueue.prop("disabled", true);
     game.socketStatus = "DISCONNECTED";
+    $statusBar.removeClass("bg-success").addClass("bg-danger");
     game.reset(socket);
     $choicePlayer.html(images["q"]);
     $choiceOpponent.html(images["q"]);
@@ -301,37 +352,48 @@ $(document).ready(() => {
     // TODO implement proper correction measures on frontend and backend
     if (reason === "io server disconnect") {
       // the disconnection was initiated by the server, you need to reconnect manually
+      game.socketStatus = "RECONNECTING";
+      $statusBar.removeClass("bg-danger").addClass("bg-secondary");
+      updateDisplay();
       socket.connect();
     }
     // else the socket will automatically try to reconnect
-  });
+  }); //end of socket.on("disconnect")
 
   socket.on("joined room", (data) => {
     game.room = data.room;
-    game.opponent = data.opponent;
+    game.opponentName = data.opponent;
     game.status = "WAITING_BOTH";
     updateDisplay();
   });
 
   // messages sent by unnamed events
   socket.on("message", (data) => {
-    const listHTML = `<li class="chat">${data.username}: ${data.message}</li>`;
-    $generalChatMessages.append(listHTML);
+    $chatMessages.append(
+      $("<li>")
+        .addClass("list-group-item")
+        .text(`${data.username}: ${data.message}`)
+    );
   });
 
   socket.on("room chat", (data) => {
-    const listHTML = `<li class="chat">${data.username}: ${data.message}</li>`;
-    $roomChatMessages.append(listHTML);
+    $chatMessages.append(
+      $("<li>")
+        .addClass("list-group-item-secondary")
+        .text(`${data.username}: ${data.message}`)
+    );
   });
 
   socket.on("general notification", (notification) => {
-    const listHTML = `<li class="notification">${notification}</li>`;
-    $generalChatMessages.append(listHTML);
+    $chatMessages.append(
+      $("<li>").addClass("list-group-item-info").text(`${notification}`)
+    );
   });
 
   socket.on("room notification", (notification) => {
-    const listHTML = `<li class="notification">${notification}</li>`;
-    $roomChatMessages.append(listHTML);
+    $chatMessages.append(
+      $("<li>").addClass("list-group-item-danger").text(`${notification}`)
+    );
   });
 
   socket.on("user notification", (data) => {
@@ -340,13 +402,30 @@ $(document).ready(() => {
 
   socket.on("choice", (data) => {
     game.opponentChoice = data.choice;
+
+    // player hasn't made choice, wait for player
     if (game.status === "WAITING_BOTH") {
       game.status = "WAITING_PLAYER";
       updateDisplay();
+      return;
     }
-    game.processChoices();
+
+    // player already made choice
+    if (game.status === "WAITING_OPPONENT") {
+      updateOpponentChoice();
+      game.processChoices(updateDisplay, updateDB);
+    }
+
     if (game.status === "ENDED") {
       $btnPlayAgain.prop("disabled", false);
+    }
+  });
+
+  $toggleChat.on("click", (event) => {
+    if ($chatroom.hasClass("show")) {
+      $chatroom.toast("hide");
+    } else if ($chatroom.hasClass("hide")) {
+      $chatroom.toast("show");
     }
   });
 });

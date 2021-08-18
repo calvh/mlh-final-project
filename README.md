@@ -80,7 +80,7 @@ Next, change the following specifications in `docker-compose.yaml`:
     nginx:
         image: jonasal/nginx-certbot:dev
         volumes:
-            - ./nginx-dev/user_conf.d:/etc/nginx/user_conf.d
+            - ./nginx/localhost_conf.d:/etc/nginx/user_conf.d
     ```
 
 Run `docker-compose up -d` and navigate to `https://localhost` once the
