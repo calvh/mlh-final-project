@@ -6,8 +6,6 @@ from flask import (
     render_template,
     request,
     session,
-    redirect,
-    url_for,
 )
 
 from app.db import client
@@ -29,7 +27,7 @@ def play():
 
 
 @rps.route("/play/cpu")
-def play():
+def play_cpu():
     return render_template("cpu.html")
 
 
