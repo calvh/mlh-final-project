@@ -5,7 +5,7 @@ from flask import (
     request,
     session,
     redirect,
-    url_for
+    url_for,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
