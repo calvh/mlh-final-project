@@ -21,9 +21,23 @@ def play():
     return render_template("play.html")
 
 
-# @rps.route("/stats")
-# def stats():
-#     return render_template("stats.html")
+@rps.route("/stats")
+def stats():
+    if request.method == "GET":
+        id = session.get("id")
+
+        # handle erroneous requests from anonymous users
+        if id is None:
+            return "UNAUHTORIZED", 401
+
+        db_result = Users.find_one({"_id": ObjectId(id)}, {"gameScore": 1})
+
+        if db_result:
+            json_db = loads(dumps(db_result["gameScore"]))
+            return render_template("stats.html", json_db=json_db)
+
+        return "NOT_FOUND", 404
+    return render_template("stats.html")
 
 
 @rps.route("/scores", methods=["GET", "PUT"])
@@ -38,10 +52,7 @@ def scores():
         db_result = Users.find_one({"_id": ObjectId(id)}, {"gameScore": 1})
 
         if db_result:
-            # db_dump = dumps(db_result["gameScore"])
-            json_db = loads(dumps(db_result["gameScore"]))
-            return render_template("stats.html", json_db=json_db)
-            # return dumps(db_result["gameScore"]), 200
+            return dumps(db_result["gameScore"]), 200
 
         return "NOT_FOUND", 404
 
