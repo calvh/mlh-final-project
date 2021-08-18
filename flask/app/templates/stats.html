@@ -3,26 +3,15 @@
 {% block title %} Player Statistics {% endblock %}
 {% block head_css %} <link rel="stylesheet" href="{{ url_for('static', filename='styles/stats.css') }}" /> {% endblock %}
 {% block content %}
-  <h1 style="background-color:transparent; margin-top: -175px; padding: 0px;">Player Stats</h1>
-  <section class="container">
-    <div class="one">
-        <img src="./static/img/female.png" alt="Avatar1" style="border-radius:50%; height: 300px; width: 300px;">
-        <h2>You</h2>
+<section>
+    <div class="container">
+        <img src="./static/img/female.png" alt="Avatar1">
+        <h2>Your Stats</h2>
         <div style="text-align: left; margin-left: 20%;">
-          <p>Wins: #</p>
-          <p>Losses: #</p>
-          <p>Ties: #</p>
+            <p>Wins: {{ wins }}</span></p>
+            <p>Losses: {{ losses }}</span></p>
+            <p>Draws: {{ draws }}</p>
         </div>
     </div>
-            
-    <div class="two">
-          <img src="./static/img/male.png" alt="Avatar2" style="border-radius:50%; height: 300px; width: 300px;">
-          <h2>Opponent</h2>
-        <div style="text-align: left; margin-left: 20%;">
-          <p>Wins: #</p>
-          <p>Losses: #</p>
-          <p>Ties: #</p>
-        </div>
-    </div>
-  </section>
+</section>
 {% endblock %}

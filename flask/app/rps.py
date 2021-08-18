@@ -1,7 +1,14 @@
 from bson.objectid import ObjectId
 from bson.json_util import dumps
 
-from flask import Blueprint, render_template, request, session
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    session,
+    redirect,
+    url_for,
+)
 
 from app.db import client
 
@@ -13,6 +20,11 @@ Users = db.users
 
 @rps.route("/")
 def index():
+
+    # redirect logged in users
+    if "username" in session:
+        return redirect(url_for("rps.play"))
+
     return render_template("index.html")
 
 
@@ -23,7 +35,26 @@ def play():
 
 @rps.route("/stats")
 def stats():
-    return render_template("stats.html")
+
+    id = session.get("id")
+
+    # handle erroneous requests from anonymous users
+    if id is None:
+        return "UNAUHTORIZED", 401
+
+    db_result = Users.find_one({"_id": ObjectId(id)}, {"gameScore": 1})
+
+    if db_result:
+        scores = db_result["gameScore"]
+
+        return render_template(
+            "stats.html",
+            wins=scores["wins"],
+            losses=scores["losses"],
+            draws=scores["draws"],
+        )
+
+    return "NOT_FOUND", 404
 
 
 @rps.route("/scores", methods=["GET", "PUT"])

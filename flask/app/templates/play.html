@@ -54,29 +54,35 @@
     </div>
 
     <!-- status bar -->
-    <div class="accordion accordion-flush fixed-bottom" id="accordion">
-        <div class="accordion-item w-25" >
-            <div id="flush-collapse" class="accordion-collapse collapse bg-white" data-bs-parent="#accordion">
-                <div class="accordion-body">
-                    <ul id="general-chat-messages"></ul>
-                    <ul id="room-chat-messages"></ul>
-                    <div class="input-group mb-3">
-                        <input id="input-general-chat" type="text" class="form-control" placeholder="Message">
-                        <button id="btn-send-room-chat" class="btn btn-outline-secondary" type="button">Room</button>
-                        <button id="btn-send-general-chat" class="btn btn-outline-secondary" type="button">All</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="status-bar" class="py-2 px-4 accordion-header bg-gradient bg-danger d-flex justify-content-between align-items-center">
-            <button class="btn btn-warning collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse">
-                Chat
-            </button>
+    <div id="status-bar" class="fixed-bottom bg-gradient bg-danger w-auto py-1 px-3 d-flex justify-content-between align-items-center">
             <span id="socket-status" class="text-white fw-bold align-middle">DISCONNECTED</span>
             <span id="current-room" class="text-white fw-bold align-middle" style="overflow: hidden; text-overflow: ellipsis; max-width: 12ch;">ROOM: null</span>
-        </div>
+        <button id="toggle-chat" type="button" class="btn btn-primary">Chat &uarr;</button>
+
     </div>
-</div>
+
+    <!-- chatrooom -->
+    <div class="position-fixed mb-5" style="z-index: 11; bottom: 0; right:0;">
+        <div id="chatroom" class="toast hide" role="alert">
+        <div class="toast-header">
+          <strong class="me-auto">Messages</strong>
+          <small></small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">
+                <div style="max-height:50vh" class="overflow-auto">
+                    <!-- chat messages -->
+                    <ul id="chat-messages" class="list-group"></ul>
+                </div>
+
+                <div class="input-group mb-3">
+                    <input id="input-chat" type="text" class="form-control" placeholder="Message">
+                    <button id="btn-send-room-chat" class="btn btn-outline-secondary" type="button">Room</button>
+                    <button id="btn-send-general-chat" class="btn btn-outline-secondary" type="button">All</button>
+                </div>
+        </div>
+      </div>
+    </div>
 
 <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
 <script src="./static/js/play.js"></script>
