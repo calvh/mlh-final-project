@@ -23,12 +23,15 @@ body {
   max-width: 12ch;
 }
 
-.position-fixed {
+#chatroom-container {
   z-index: 11;
   bottom: 0;
   right: 0;
 }
 
-.overflow-auto {
+#chat-messages-container {
   max-height: 50vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
 }
