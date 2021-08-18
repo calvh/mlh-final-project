@@ -1,11 +1,9 @@
 from flask import (
     Blueprint,
     flash,
-    redirect,
     render_template,
     request,
     session,
-    url_for,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -23,7 +21,7 @@ def register():
 
     # redirect logged in users
     if "username" in session:
-        return redirect(url_for("rps.play"))
+        return redirect(url_for("index"))
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -45,7 +43,7 @@ def register():
             }
             Users.insert_one(user).inserted_id
             flash("Register successful, please login.")
-            return redirect(url_for("rps.choose_game"))
+            return redirect(url_for("index"))
 
         flash(error)
 
@@ -75,7 +73,7 @@ def login():
             session.clear()
             session["username"] = user["username"]
             session["id"] = str(user["_id"])
-            return redirect(url_for("rps.choose_game"))
+            return redirect(url_for("rps.index"))
 
         flash(error)
 
