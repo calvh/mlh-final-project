@@ -21,7 +21,7 @@ def play():
     return render_template("play.html")
 
 
-@rps.route("/stats")
+@rps.route("/stats", methods=["GET"])
 def stats():
     if request.method == "GET":
         id = session.get("id")
