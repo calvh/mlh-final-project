@@ -1,11 +1,37 @@
 "use strict";
-
-const updatePlayerChoice = (choice) => {
-  $choicePlayer.attr("src", images[choice]);
+const endGame = (game) => {
+  updateOpponentChoice(game.opponentChoice);
+  game.processChoices();
+  updateDB(game.result);
+  updateStatus(game.status, game.lastResult);
+  continueNextGame(game);
 };
 
-const updateOpponentChoice = (choice) => {
-  $choiceOpponent.attr("src", images[choice]);
+const continueNextGame = (game) => {
+  updateCountdown();
+
+  setTimeout(() => {
+    // handle opponent leaving during timeout
+    if (game.room) {
+      game.status = "WAITING_BOTH";
+      game.gameNumber += 1;
+
+      updateDisplay(game);
+      updatePlayerChoice("q");
+      updateOpponentChoice("q");
+    }
+  }, 3000);
+};
+
+const updateDisplay = (game) => {
+  updateStatus(game.status, game.lastResult);
+  updateStatusBar(game.socketStatus);
+  updateGameNumber(game.gameNumber);
+  updateSocketStatus(game.socketStatus);
+  updateCurrentRoom(game.currentRoom);
+  updatePlayerName(game.playerName);
+  updateOpponentName(game.opponentChoice);
+  updateStats(game.wins, game.losses, game.draws);
 };
 
 const updateStatusBar = (status) => {
@@ -21,17 +47,21 @@ const updateStatusBar = (status) => {
         .removeClass("bg-success")
         .removeClass("bg-secondary")
         .addClass("bg-danger");
-    case "RECONNECTING":
+      break;
+    case "STOPPED":
       $statusBar
         .removeClass("bg-success")
         .removeClass("bg-danger")
         .addClass("bg-secondary");
+      break;
+    default:
+      break;
   }
 };
 
-const updateDisplay = (game) => {
+const updateStatus = (status, lastResult) => {
   let statusStr = "";
-  switch (game.status) {
+  switch (status) {
     case "START":
       statusStr = "Click Queue to find an opponent!";
       break;
@@ -51,7 +81,7 @@ const updateDisplay = (game) => {
       statusStr = "Your opponent left! Click Queue or CPU.";
       break;
     case "ENDED":
-      switch (game.lastResult) {
+      switch (lastResult) {
         case "w":
           statusStr = "You won!";
           break;
@@ -63,36 +93,16 @@ const updateDisplay = (game) => {
           break;
       }
       break;
+    case "STOPPED":
+      statusStr = "You are already logged in elsewhere!";
+      break;
+    case "GAME_ERROR":
+      statusStr = "Sorry, an error occured. Please refresh the page";
+      break;
+    default:
+      break;
   }
-
   $gameStatus.text(statusStr);
-  $gameNumber.text(`Game #${game.gameNumber}`);
-  $socketStatus.text(game.socketStatus);
-  $currentRoom.text(`ROOM: ${game.room}`);
-  $playerName.text(`${game.playerName} (you)`);
-  $opponentName.text(`${game.opponentName}`);
-  $stats.text(
-    `Wins: ${game.wins}, Losses: ${game.losses}, Draws: ${game.draws} (total)`
-  );
-};
-
-const updateDB = (result) => {
-  // send PUT request to database to update score for player
-  $.ajax({
-    type: "PUT",
-    url: "/scores",
-    contentType: "application/json",
-    data: JSON.stringify({ result }),
-  })
-    .done((response) => console.log("DB updated"))
-    .fail((response) => console.log("DB Error: could not update score"));
-};
-
-const updateChat = (listItem) => {
-  if ($("#chat-messages li").length > 100) {
-    $chatMessages.find(":first-child").remove();
-  }
-  $chatMessages.append(listItem);
 };
 
 const updateCountdown = () => {
@@ -111,14 +121,41 @@ const updateCountdown = () => {
   const timeinterval = setInterval(countdown, 1000);
 };
 
-const continueNextGame = () => {
-  updateCountdown();
+const updatePlayerName = (name) => {
+  $playerName.text(`${name} (you)`);
+};
 
-  setTimeout(() => {
-    game.status = "WAITING_BOTH";
-    game.gameNumber += 1;
-    updateDisplay(game);
-    updatePlayerChoice("q");
-    updateOpponentChoice("q");
-  }, 3000);
+const updateOpponentName = (name) => {
+  $opponentName.text(name ? name : "?");
+};
+
+const updateStats = (wins, losses, draws) => {
+  $stats.text(`Wins: ${wins}, Losses: ${losses}, Draws: ${draws} (total)`);
+};
+
+const updateSocketStatus = (status) => {
+  $socketStatus.text(status);
+};
+
+const updateGameNumber = (number) => {
+  $gameNumber.text(`Game #${number}`);
+};
+
+const updateCurrentRoom = (room) => {
+  $currentRoom.text(room ? `ROOM: ${room}` : "NOT IN ROOM");
+};
+
+const updateChat = (listItem) => {
+  if ($("#chat-messages li").length > 100) {
+    $chatMessages.find(":first-child").remove();
+  }
+  $chatMessages.append(listItem);
+};
+
+const updatePlayerChoice = (choice) => {
+  $choicePlayer.attr("src", images[choice]);
+};
+
+const updateOpponentChoice = (choice) => {
+  $choiceOpponent.attr("src", images[choice]);
 };
