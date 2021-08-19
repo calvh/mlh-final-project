@@ -1,5 +1,6 @@
 "use strict";
 
+const $gameNumber = $("#game-number");
 const $gameStatus = $("#game-status");
 const $statusBar = $("#status-bar");
 const $stats = $("#game-stats");
@@ -14,15 +15,13 @@ const $chatroom = $("#chatroom");
 const $chatMessages = $("#chat-messages");
 const $btnToggleChat = $("#toggle-chat");
 const $inputChat = $("#input-chat");
-const $btnSendGeneralChat = $("#btn-send-general-chat");
-const $btnSendRoomChat = $("#btn-send-room-chat");
+const $btnSendChat = $("#btn-send-chat");
+const $checkRoomChat = $("#check-room-chat");
 
 const $btnRock = $("#btn-rock");
 const $btnPaper = $("#btn-paper");
 const $btnScissors = $("#btn-scissors");
-const $btnPlayAgain = $("#btn-play-again");
-const $btnPlayCpu = $("#btn-play-cpu");
-const $btnQueue = $("#btn-queue");
+const $btnNewGame = $("#btn-new-game");
 
 const images = {
   r: "./static/img/icons8-rock-80.png",
@@ -46,3 +45,10 @@ const socket = io();
 
 // initialize game instance
 const game = new Game();
+
+const leaveRoom = (room) => {
+  if (room) {
+    // trigger server to initiate leave room
+    socket.emit("leave room", { room });
+  }
+};
