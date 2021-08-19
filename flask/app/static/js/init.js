@@ -9,6 +9,8 @@ const $streak = $("#game-streak");
 const $choicePlayer = $("#choice-player");
 const $choiceOpponent = $("#choice-opponent");
 const $socketStatus = $("#socket-status");
+const $checkCpu = $("#check-cpu");
+const $checkPvp = $("#check-pvp");
 
 const $currentRoom = $("#current-room");
 const $playerName = $("#player-name");
@@ -79,3 +81,5 @@ const updateDB = (result) => {
     .done((response) => console.log("DB updated"))
     .fail((response) => console.log("Error: could not update scores"));
 };
+
+

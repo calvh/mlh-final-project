@@ -36,8 +36,18 @@
         </div>
     </div>
 
-    <div class="container mb-5 w-50">
+    <div class="">
         <button type="button" class="btn btn-warning" id="btn-new-game">New Game</button>
+        <div class="my-2">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="check-pvp" value="option1">
+                <label class="form-check-label" for="inlineRadio1">PvP</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="check-cpu" value="option2"> 
+                <label class="form-check-label" for="inlineRadio2">CPU</label>
+            </div>
+        </div>
     </div>
 
     <div class="flex-container">
@@ -65,9 +75,11 @@
     <div id="chatroom-container" class="position-fixed mb-5">
         <div id="chatroom" class="toast hide" role="alert">
             <div class="toast-header">
+                <label class="form-check-label"
+                       for="check-room-chat"><strong>All</strong></label>
                 <div class="me-auto form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="check-room-chat" disabled>
-                    <label class="form-check-label" for="check-room-chat"><strong>Whisper Opponent</strong></label>
+                    <label class="form-check-label" for="check-room-chat"><strong>Room</strong></label>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
             </div>
