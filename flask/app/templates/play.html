@@ -7,9 +7,9 @@
 <div class="container">
 
     <!-- status bars -->
-    <h1 id="game-stats">Wins: 0, Losses: 0, Draws: 0 (total)</h1>
-    <h1 id="game-number">Game #1</h1>
-    <h1 id="game-status">Click Queue to find an opponent!</h1>
+    <h2 id="game-stats">Wins: 0, Losses: 0, Draws: 0 (total)</h2>
+    <h2 id="game-streak">Streak: 0</h2>
+    <h2><span id="round-number"></span>: <span id="game-status">Click New Game to find an opponent!</span> <span id="countdown"></span></h2>
 
     <!-- avatars -->
     <div class="row justify-content-around">
@@ -35,6 +35,11 @@
             </div>
         </div>
     </div>
+
+    <div class="container mb-5 w-50">
+        <button type="button" class="btn btn-warning" id="btn-new-game">New Game</button>
+    </div>
+
     <div class="flex-container">
         <button type="button" class="circle-dot" id="btn-rock">
             <img src="./static/img/icons8-rock-80.png"></img>
@@ -47,10 +52,6 @@
         </button>
     </div>
 
-    <!-- game options -->
-    <div class="container my-2 w-50">
-        <button type="button" class="btn btn-warning" id="btn-new-game">Queue</button>
-    </div>
 
     <!-- status bar -->
     <div id="status-bar" class="fixed-bottom bg-gradient bg-danger w-auto py-1 px-3 d-flex justify-content-between align-items-center">

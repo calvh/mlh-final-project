@@ -6,7 +6,7 @@ class Game {
     this.socketStatus = "DISCONNECTED";
     this.playerName = null;
     this.lastResult = null;
-    this.gameNumber = 1;
+    this.roundNumber = 1;
     this.gameType = null;
     this.room = null;
     this.opponentName = null;
@@ -15,6 +15,7 @@ class Game {
     this.wins = 0;
     this.losses = 0;
     this.draws = 0;
+    this.streak = 0;
   }
 
   set setWins(newWin) {
@@ -39,7 +40,7 @@ class Game {
   reset() {
     if (this.status === "ENDED" || this.status === "OPPONENT_LEFT") {
       this.status = "START";
-      this.gameNumber = 1;
+      this.roundNumber = 1;
       this.gameType = null;
       this.room = null;
       this.opponentName = null;
@@ -90,12 +91,15 @@ class Game {
         switch (result) {
           case "w":
             this.wins += 1;
+            this.streak += 1;
             break;
           case "l":
             this.losses += 1;
+            this.streak = 0;
             break;
           case "d":
             this.draws += 1;
+            this.streak = 0;
             break;
           default:
             // error
