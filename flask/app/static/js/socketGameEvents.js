@@ -5,8 +5,8 @@ socket.on("connected", async (username) => {
   $btnNewGame.prop("disabled", false);
   game.playerName = username;
   game.socketStatus = "CONNECTED";
-  const scores = await fetchScores();
-  Object.assign(game, scores);
+  // const scores = await fetchScores();
+  // Object.assign(game, scores);
   updateDisplay(game);
 });
 
@@ -18,8 +18,8 @@ socket.on("disconnect", (reason) => {
   game.socketStatus = "DISCONNECTED";
   updateDisplay(game);
 
-  game.reset();
   leaveRoom(game.room);
+  game.reset();
 
   $choicePlayer.html(images["q"]);
   $choiceOpponent.html(images["q"]);
@@ -59,8 +59,8 @@ socket.on("choice", (data) => {
 socket.on("opponent left", () => {
   console.log("Your opponent left.");
   game.status = "OPPONENT_LEFT";
-  game.reset();
   leaveRoom(game.room);
+  game.reset();
 
   updateDisplay(game);
 
@@ -71,6 +71,7 @@ socket.on("opponent left", () => {
 
 socket.on("left room", () => {
   console.log("You left the room");
+  game.room = null;
   $btnNewGame.prop("disabled", false);
   $checkRoomChat.prop("disabled", true);
 });

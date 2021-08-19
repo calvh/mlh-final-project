@@ -4,6 +4,13 @@ const handlePlayerButton = (choice) => {
     return;
   }
 
+  if (game.type === "CPU" && game.status === "WAITING_PLAYER") {
+    game.playerChoice = choice;
+    updatePlayerChoice(game.playerChoice);
+    endGame(game);
+    return;
+  }
+
   if (game.status === "WAITING_BOTH" || game.status === "WAITING_PLAYER") {
     if (!game.room) {
       game.status = "GAME_ERROR";
@@ -33,22 +40,64 @@ const handlePlayerButton = (choice) => {
 
 $btnNewGame.on("click", (event) => {
   event.preventDefault();
-  $btnNewGame.prop("disabled", true);
-  if (game.status === "START") {
-    $btnNewGame.prop("disabled", true);
-    socket.emit("queue");
-    game.status = "QUEUE";
-    updateDisplay(game);
+  if (
+    game.type === "PVP" &&
+    (game.status === "WAITING_PLAYER" ||
+      game.status === "WAITING_OPPONENT" ||
+      game.status === "WAITING_BOTH")
+  ) {
+    // don't allow leaving a PVP game in progress
+    return;
   }
 
-  if (game.status === "ENDED" || game.status === "OPPONENT_LEFT") {
-    game.reset();
-    leaveRoom(game.room);
+  // CPU game
+  if ($checkCpu.is(":checked")) {
+    if (game.status === "START") {
+      // start a new CPU game
+    } else if (game.status === "ENDED") {
+      // start a new game if an existing game has ended
+      if (game.room) {
+        leaveRoom(game.room);
+      }
+      game.reset();
+    }
+    game.status = "WAITING_PLAYER";
+    game.type = "CPU";
+    game.opponentName = "Skynet";
+    updateDisplay(game);
     updatePlayerChoice("q");
     updateOpponentChoice("q");
-    socket.emit("queue");
-    game.status = "QUEUE";
-    updateDisplay(game);
+    return;
+  }
+
+  // PVP game
+  if ($checkPvp.is(":checked")) {
+    $btnNewGame.prop("disabled", true);
+    if (game.status === "START") {
+      game.type = "PVP";
+      $btnNewGame.prop("disabled", true);
+      socket.emit("queue");
+      game.status = "QUEUE";
+      updateDisplay(game);
+      updatePlayerChoice("q");
+      updateOpponentChoice("q");
+    } else if (
+      game.type === "CPU" ||
+      game.status === "ENDED" ||
+      game.status === "OPPONENT_LEFT"
+    ) {
+      game.type = "PVP";
+      $btnNewGame.prop("disabled", true);
+      if (game.room) {
+        leaveRoom(game.room);
+      }
+      game.reset();
+      updatePlayerChoice("q");
+      updateOpponentChoice("q");
+      socket.emit("queue");
+      game.status = "QUEUE";
+      updateDisplay(game);
+    }
   }
 });
 

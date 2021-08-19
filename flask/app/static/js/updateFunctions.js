@@ -1,5 +1,8 @@
 "use strict";
 const endGame = (game) => {
+  if (game.type === "CPU") {
+    game.opponentChoice = Game.cpuChoose();
+  }
   updateOpponentChoice(game.opponentChoice);
 
   game.processChoices();
@@ -17,15 +20,16 @@ const continueNextGame = (game) => {
 
   setTimeout(() => {
     // handle opponent leaving during timeout
-    if (game.room) {
-      $countdown.text("");
+    if (game.type === "CPU") {
+      game.status = "WAITING_PLAYER";
+    } else if (game.room) {
       game.status = "WAITING_BOTH";
-      game.roundNumber += 1;
-
-      updateDisplay(game);
-      updatePlayerChoice("q");
-      updateOpponentChoice("q");
     }
+    $countdown.text("");
+    game.roundNumber += 1;
+    updateDisplay(game);
+    updatePlayerChoice("q");
+    updateOpponentChoice("q");
   }, 3000);
 };
 
