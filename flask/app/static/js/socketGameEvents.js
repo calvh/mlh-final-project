@@ -1,16 +1,19 @@
 "use strict";
 
-socket.on("connected", (username) => {
+socket.on("connected", async (username) => {
   console.log("connected");
+  $btnNewGame.prop("disabled", false);
   game.playerName = username;
   game.socketStatus = "CONNECTED";
+  const scores = await fetchScores();
+  Object.assign(game, scores);
   updateDisplay(game);
 });
 
 socket.on("disconnect", (reason) => {
   console.log("disconnected");
 
-  $btnNewGame.prop("disabled", false);
+  $btnNewGame.prop("disabled", true);
 
   game.socketStatus = "DISCONNECTED";
   updateDisplay(game);
@@ -26,6 +29,7 @@ socket.on("disconnect", (reason) => {
 socket.on("joined room", (data) => {
   console.log(`You joined room: ${data.room}`);
 
+  $btnNewGame.prop("disabled", true);
   $checkRoomChat.prop("disabled", false);
 
   game.room = data.room;
@@ -42,13 +46,13 @@ socket.on("choice", (data) => {
   // player hasn't made choice, wait for player
   if (game.status === "WAITING_BOTH") {
     game.status = "WAITING_PLAYER";
-    updateStatus(game.status);
+    updateDisplay(game);
     return;
   }
 
   // player already made choice, determine winner
   if (game.status === "WAITING_OPPONENT") {
-      endGame(game);
+    endGame(game);
   }
 });
 
@@ -67,6 +71,7 @@ socket.on("opponent left", () => {
 
 socket.on("left room", () => {
   console.log("You left the room");
+  $btnNewGame.prop("disabled", false);
   $checkRoomChat.prop("disabled", true);
 });
 

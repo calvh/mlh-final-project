@@ -1,9 +1,14 @@
 "use strict";
 const endGame = (game) => {
   updateOpponentChoice(game.opponentChoice);
+
   game.processChoices();
-  updateDB(game.result);
+
+  updateDB(game.lastResult);
   updateStatus(game.status, game.lastResult);
+  updateStats(game.wins, game.losses, game.draws);
+  updateAnnouncement(game.streak);
+
   continueNextGame(game);
 };
 
@@ -13,8 +18,9 @@ const continueNextGame = (game) => {
   setTimeout(() => {
     // handle opponent leaving during timeout
     if (game.room) {
+      $countdown.text("");
       game.status = "WAITING_BOTH";
-      game.gameNumber += 1;
+      game.roundNumber += 1;
 
       updateDisplay(game);
       updatePlayerChoice("q");
@@ -26,11 +32,12 @@ const continueNextGame = (game) => {
 const updateDisplay = (game) => {
   updateStatus(game.status, game.lastResult);
   updateStatusBar(game.socketStatus);
-  updateGameNumber(game.gameNumber);
+  updateRoundNumber(game.roundNumber);
   updateSocketStatus(game.socketStatus);
-  updateCurrentRoom(game.currentRoom);
+  updateCurrentRoom(game.room);
   updatePlayerName(game.playerName);
-  updateOpponentName(game.opponentChoice);
+  updateOpponentName(game.opponentName);
+  updateStreak(game.streak);
   updateStats(game.wins, game.losses, game.draws);
 };
 
@@ -63,7 +70,7 @@ const updateStatus = (status, lastResult) => {
   let statusStr = "";
   switch (status) {
     case "START":
-      statusStr = "Click Queue to find an opponent!";
+      statusStr = "Click New Game to find an opponent!";
       break;
     case "QUEUE":
       statusStr = "Looking for a match...";
@@ -78,7 +85,7 @@ const updateStatus = (status, lastResult) => {
       statusStr = "Waiting for your Opponent";
       break;
     case "OPPONENT_LEFT":
-      statusStr = "Your opponent left! Click Queue or CPU.";
+      statusStr = "Your opponent left! Click New Game";
       break;
     case "ENDED":
       switch (lastResult) {
@@ -109,7 +116,7 @@ const updateCountdown = () => {
   let t = 3;
 
   const countdown = () => {
-    $gameNumber.text(`New game in ${t}`);
+    $countdown.text(`Next round in ${t}`);
     t--;
 
     if (t <= 0) {
@@ -137,12 +144,49 @@ const updateSocketStatus = (status) => {
   $socketStatus.text(status);
 };
 
-const updateGameNumber = (number) => {
-  $gameNumber.text(`Game #${number}`);
+const updateRoundNumber = (number) => {
+  $roundNumber.text(`Round #${number}`);
 };
 
 const updateCurrentRoom = (room) => {
   $currentRoom.text(room ? `ROOM: ${room}` : "NOT IN ROOM");
+};
+
+const updateAnnouncement = (streak) => {
+  let announcement = "";
+  switch (streak) {
+    case 0:
+    case 1:
+    case 2:
+      announcement = `Streak: ${streak}`;
+      break;
+    case 3:
+      announcement = "RPS SPREE!";
+      break;
+    case 4:
+      announcement = "RAMPAGE!";
+      break;
+    case 5:
+      announcement = "UNSTOPPABLE!";
+      break;
+    case 6:
+      announcement = "DOMINATING!";
+      break;
+    case 7:
+      announcement = "GODLIKE!";
+      break;
+    case 8:
+      announcement = "LEGENDARY!";
+      break;
+    default:
+      announcement = "LEGENDARY!";
+      break;
+  }
+  $streak.text(announcement);
+};
+
+const updateStreak = (streak) => {
+  $streak.text(`Streak: ${streak}`);
 };
 
 const updateChat = (listItem) => {

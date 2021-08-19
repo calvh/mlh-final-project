@@ -1,12 +1,15 @@
 "use strict";
 
-const $gameNumber = $("#game-number");
+const $roundNumber = $("#round-number");
 const $gameStatus = $("#game-status");
+const $countdown = $("#countdown");
 const $statusBar = $("#status-bar");
 const $stats = $("#game-stats");
+const $streak = $("#game-streak");
 const $choicePlayer = $("#choice-player");
 const $choiceOpponent = $("#choice-opponent");
 const $socketStatus = $("#socket-status");
+
 const $currentRoom = $("#current-room");
 const $playerName = $("#player-name");
 const $opponentName = $("#opponent-name");
@@ -53,8 +56,20 @@ const leaveRoom = (room) => {
   }
 };
 
+const fetchScores = async () => {
+  try {
+    return (await fetch("/scores")).json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const updateDB = (result) => {
-  // send PUT request to database to update score for player
+  // registered users can't have "#" in username
+  if (game.playerName.includes("#")) {
+    return;
+  }
+
   $.ajax({
     type: "PUT",
     url: "/scores",
@@ -62,5 +77,5 @@ const updateDB = (result) => {
     data: JSON.stringify({ result }),
   })
     .done((response) => console.log("DB updated"))
-    .fail((response) => console.log("DB Error: could not update score"));
+    .fail((response) => console.log("Error: could not update scores"));
 };
