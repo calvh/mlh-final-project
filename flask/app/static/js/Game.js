@@ -78,39 +78,35 @@ class Game {
   // Human game: player makes a choice when their opponent already made choice
   // Human game: opponent makes a choice (triggered through socket event), when the player has already made their choice
   processChoices() {
-    switch (this.status) {
-      case "WAITING_PLAYER":
-      case "WAITING_OPPONENT":
-        if (this.playerChoice && this.opponentChoice) {
-          const c1 = this.playerChoice;
-          const c2 = this.opponentChoice;
-          const result = Game.calculateResult(c1, c2);
+    if (
+      this.status === "WAITING_PLAYER" ||
+      this.status === "WAITING_OPPONENT"
+    ) {
+      if (this.playerChoice && this.opponentChoice) {
+        const c1 = this.playerChoice;
+        const c2 = this.opponentChoice;
+        const result = Game.calculateResult(c1, c2);
 
-          switch (result) {
-            case "w":
-              this.wins += 1;
-              break;
-            case "l":
-              this.losses += 1;
-              break;
-            case "d":
-              this.draws += 1;
-              break;
-            default:
-              // error
-              break;
-          }
-          this.status = "ENDED";
-          this.lastResult = result;
-          this.playerChoice = null;
-          this.opponentChoice = null;
+        switch (result) {
+          case "w":
+            this.wins += 1;
+            break;
+          case "l":
+            this.losses += 1;
+            break;
+          case "d":
+            this.draws += 1;
+            break;
+          default:
+            // error
+            break;
         }
 
-      default:
-        // when game.status is one of:
-        // "START", "WAITING_BOTH", "ENDED", "OPPONENT_LEFT"
-        // do nothing
-        break;
+        this.status = "ENDED";
+        this.lastResult = result;
+        this.playerChoice = null;
+        this.opponentChoice = null;
+      }
     }
   }
 }

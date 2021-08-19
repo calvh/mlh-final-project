@@ -6,6 +6,9 @@ const handlePlayerButton = (choice) => {
 
   if (game.status === "WAITING_BOTH" || game.status === "WAITING_PLAYER") {
     if (!game.room) {
+      game.status = "GAME_ERROR";
+      updateStatus(game.status);
+      game.status = "STOPPED";
       console.log("ERROR_NOT_IN_ROOM");
       return;
     }
@@ -17,16 +20,13 @@ const handlePlayerButton = (choice) => {
     // opponent hasn't made choice, wait for opponent
     if (game.status === "WAITING_BOTH") {
       game.status = "WAITING_OPPONENT";
-      updateDisplay(game);
+      updateStatus(game.status);
       return;
     }
 
+    // opponent already made choice, determine winner
     if (game.status === "WAITING_PLAYER") {
-      updateOpponentChoice(game.opponentChoice);
-      game.processChoices();
-      updateDB(game.result);
-      updateDisplay(game);
-      continueNextGame();
+        endGame(game);
     }
   }
 };
@@ -36,7 +36,7 @@ $btnNewGame.on("click", (event) => {
   if (game.status === "START") {
     socket.emit("queue");
     game.status = "QUEUE";
-    updateDisplay(game);
+    updateStatus(game.status);
   }
 
   if (game.status === "ENDED" || game.status === "OPPONENT_LEFT") {

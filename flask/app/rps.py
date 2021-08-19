@@ -26,11 +26,6 @@ def play():
     return render_template("play.html")
 
 
-@rps.route("/play/cpu")
-def play_cpu():
-    return render_template("cpu.html")
-
-
 @rps.route("/stats")
 def stats():
 

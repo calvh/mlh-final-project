@@ -52,3 +52,15 @@ const leaveRoom = (room) => {
     socket.emit("leave room", { room });
   }
 };
+
+const updateDB = (result) => {
+  // send PUT request to database to update score for player
+  $.ajax({
+    type: "PUT",
+    url: "/scores",
+    contentType: "application/json",
+    data: JSON.stringify({ result }),
+  })
+    .done((response) => console.log("DB updated"))
+    .fail((response) => console.log("DB Error: could not update score"));
+};
