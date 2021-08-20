@@ -6,6 +6,17 @@ h1 {
   margin: 25px 15px;
 }
 
+body {
+  background-color: #de7a22;
+}
+
+.btn-warning{
+  background-color: #f6c144;
+  text-decoration: none;
+  height: 55px;
+  width: 120px;
+  font-size: larger;
+}
 .flex-container {
   display: flex;
   justify-content: space-evenly;

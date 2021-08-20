@@ -4,7 +4,7 @@
 {% block head_css %} <link rel="stylesheet" href="{{ url_for('static', filename='styles/play.css') }}" /> {% endblock %}
 {% block content %}
 
-<div class="container">
+<div class="container" style="padding: 20px;">
 
     <!-- status bars -->
     <h2 id="game-stats">Wins: 0, Losses: 0, Draws: 0 (total)</h2>
@@ -75,8 +75,7 @@
     <div id="chatroom-container" class="position-fixed mb-5">
         <div id="chatroom" class="toast hide" role="alert">
             <div class="toast-header">
-                <label class="form-check-label"
-                       for="check-room-chat"><strong>All</strong></label>
+                <label class="form-check-label" for="check-room-chat"><strong>All</strong></label>
                 <div class="me-auto form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="check-room-chat" disabled>
                     <label class="form-check-label" for="check-room-chat"><strong>Room</strong></label>
