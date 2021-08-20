@@ -46,7 +46,7 @@ def register():
             }
             Users.insert_one(user).inserted_id
             flash("Register successful, please login.")
-            return redirect(url_for("rps.index"))
+            return redirect(url_for("auth.login"))
 
         flash(error)
 
