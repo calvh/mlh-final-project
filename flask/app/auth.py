@@ -43,8 +43,8 @@ def register():
                 "username": username,
                 "password": generate_password_hash(password),
                 "gameScore": {
-                    "draws": 0, 
-                    "wins": 0, 
+                    "draws": 0,
+                    "wins": 0,
                     "losses": 0
                 }
             }
