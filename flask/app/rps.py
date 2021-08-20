@@ -34,19 +34,15 @@ def stats():
     # handle erroneous requests from anonymous users
     if id is None:
         return "UNAUHTORIZED", 401
-
     db_result = Users.find_one({"_id": ObjectId(id)}, {"gameScore": 1})
-
     if db_result:
         scores = db_result["gameScore"]
-
         return render_template(
             "stats.html",
             wins=scores["wins"],
             losses=scores["losses"],
             draws=scores["draws"],
         )
-
     return "NOT_FOUND", 404
 
 

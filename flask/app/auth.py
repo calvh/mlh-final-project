@@ -42,10 +42,11 @@ def register():
             user = {
                 "username": username,
                 "password": generate_password_hash(password),
+                "gameScore": {"draws": 0, "wins": 0, "losses": 0},
             }
             Users.insert_one(user).inserted_id
             flash("Register successful, please login.")
-            return redirect(url_for("index"))
+            return redirect(url_for("auth.login"))
 
         flash(error)
 
