@@ -63,7 +63,8 @@ services:
     image: prom/prometheus:latest
     restart: unless-stopped
     command:
-      - --config.file=/etc/prometheus/prometheus.yaml
+      - --config.file=/etc/prometheus/prometheus.yaml 
+      - --web.external-url=/prometheus/
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
     depends_on:
@@ -77,6 +78,7 @@ services:
     restart: unless-stopped
     volumes:
       - grafana_storage:/var/lib/grafana
+      - ./grafana.ini:/etc/grafana/grafana.ini:ro
     depends_on:
       - prometheus
     networks:
