@@ -34,7 +34,7 @@
     <div class="container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header>
             <div>
-                <h3 class="float-md-start mb-0">RPS</h3>
+                <img src="./static/img/rpslogo3.png" class="float-md-start mb-0" alt="logo" style="width: 90px; height: 85px;">
                 <nav class="nav nav-masthead justify-content-center float-md-end">
                     {% for href, id, caption in navigation_bar %}
                     <a {% if id==active_page %} class="nav-link active" {% else %} class="nav-link" {% endif %} href="{{ href|e }}">{{ caption|e }}</a>

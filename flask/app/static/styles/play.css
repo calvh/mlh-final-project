@@ -12,6 +12,31 @@ body {
   width: 18rem;
 }
 
+.card-img-top{
+  border-radius: 50%;
+}
+
+/* unvisited link */
+a:link {
+  text-decoration: none;
+  color: black;
+}
+
+/* visited link */
+a:visited {
+  color: black;
+}
+
+/* mouse over link */
+a:hover {
+  color: #3CB371;
+}
+
+/* selected link */
+a:active {
+  color: black;
+}
+
 .circle-dot {
   margin: 5px;
 }
