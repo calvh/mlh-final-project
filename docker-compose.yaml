@@ -57,28 +57,32 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     networks:
       - frontend-network
+
   prometheus:
     container_name: prometheus
     image: prom/prometheus:latest
     restart: unless-stopped
-    ports:
-      - 9090:9090
     command:
-      - --config.file=/etc/prometheus/prometheus.yaml
+      - --config.file=/etc/prometheus/prometheus.yaml 
+      - --web.external-url=/prometheus/
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
     depends_on:
       - cadvisor
+    networks:
+      - frontend-network
+
   grafana:
     container_name: grafana
     image: grafana/grafana:latest
     restart: unless-stopped
-    ports:
-      - 3000:3000
     volumes:
       - grafana_storage:/var/lib/grafana
+      - ./grafana.ini:/etc/grafana/grafana.ini:ro
     depends_on:
       - prometheus
+    networks:
+      - frontend-network
 
 volumes:
   nginx-secrets:
