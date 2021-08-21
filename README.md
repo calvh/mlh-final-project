@@ -90,6 +90,13 @@ certificates: this is normal because the test configuration generates
 certificates](https://github.com/JonasAlfredsson/docker-nginx-certbot/blob/master/docs/advanced_usage.md#local-ca).
 Accept the warning in order to see the app.
 
+## AWS Config
+
+![instance](https://user-images.githubusercontent.com/18680207/130306501-54e248d4-da24-48a7-aa4d-d50977fd399f.png)
+![details](https://user-images.githubusercontent.com/18680207/130306498-32df673e-b6e3-4979-9f00-95728e94ec75.png)
+![networking](https://user-images.githubusercontent.com/18680207/130306502-914d8bdf-61e3-4f84-813a-f9290bc85da0.png)
+![rules](https://user-images.githubusercontent.com/18680207/130306503-28bcdef2-d735-464d-97d8-1f186b98ff27.png)
+
 ## Contributors
 
 -   [HamdiaA](https://github.com/HamdiaA)
