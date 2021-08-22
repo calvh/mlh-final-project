@@ -7,7 +7,7 @@ h1 {
 }
 
 body {
-  background-color: #de7a22;
+  background-color: #bdbdbd;
 }
 
 .btn-warning{
@@ -105,7 +105,7 @@ a:active {
   height: 200px;
   margin: auto;
   padding: 10px;
-  background-color: #de7a22;
+  background-color: #bdbdbd;
 }
 
 .one {
@@ -125,6 +125,5 @@ a:active {
 #footer-bar { 
   position: relative;
   width: 100%;
-  bottom: 0;
   color: white;
 }
