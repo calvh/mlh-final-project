@@ -119,3 +119,12 @@ a:active {
   height: 200px;
   float: right;
 }
+
+
+/* footer bar */
+#footer-bar { 
+  position: relative;
+  width: 100%;
+  bottom: 0;
+  color: white;
+}
