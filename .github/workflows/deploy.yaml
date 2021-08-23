@@ -43,15 +43,3 @@ jobs:
 
       - name: Run production test
         run: ./prod_test.sh
-
-      - name: Notify discord failure
-        if: ${{ failure() }}
-        run: >-
-          curl -s
-          -X POST "${{ secrets.DISCORD_WEBHOOK }}"
-          -d "content=🚨 Deployment Failed"
-      - name: Notify discord success
-        run: >-
-          curl -s
-          -X POST "${{ secrets.DISCORD_WEBHOOK }}"
-          -d "content=🚀 Deployment Successful"
