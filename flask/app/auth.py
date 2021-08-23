@@ -12,6 +12,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app.db import client
 from bson.json_util import dumps  # needed to serialize mongo object to json
 
+import re
+
 auth = Blueprint("auth", __name__, url_prefix="/auth")
 
 db = client["rps"]
@@ -36,6 +38,14 @@ def register():
             error = "Password is required."
         elif Users.find_one({"username": username}) is not None:
             error = f"User {username} is already registered."
+        elif not re.search(r"[.*]{3,}", username):
+            error = "Username must be at least 3 characters"
+        elif not re.search(r"[.*]{8,}", password):
+            error = "Password must be at least 8 characters"
+        elif not re.search(r".*[A-Z]+.*[a-z]+.*[\d]+.*", password):
+            error = "Password needs 1 uppercase, 1 lowercase, and 1 number"
+        elif not re.search(r".*?![#]+.*", username):
+            error = "Username cannot contain hashes (#)"
 
         if error is None:
             # TODO add error handling for failed insert
